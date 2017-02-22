@@ -12,8 +12,8 @@ import {
   retrieveSchema,
   toIdSchema,
   shouldRender,
-  getDefaultRegistry,
   defaultFieldValue,
+  getDefaultRegistry
 } from "../../utils";
 
 function ArrayFieldTitle({TitleField, idSchema, title, required}) {
