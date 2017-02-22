@@ -38,7 +38,7 @@ function BaseInput(props) {
       className={classNames}
       readOnly={readonly}
       autoFocus={autofocus}
-      value={typeof value === "undefined" ? "" : value}
+      value={value == null ? "" : value}
       onChange={_onChange}
       onBlur={onBlur && (event => onBlur(id, event.target.value))}
       onFocus={() => formContext.setTouched(id)}

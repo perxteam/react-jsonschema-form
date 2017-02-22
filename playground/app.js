@@ -364,6 +364,7 @@ class App extends Component {
               uiSchema={uiSchema}
               formData={formData}
               onChange={this.onFormDataChange}
+              onSubmit={({formData}) => console.log("submitted formData", formData)}
               fields={{geo: GeoPosition}}
               validate={validate}
               transformErrors={transformErrors}
