@@ -1,26 +1,21 @@
 import React, { Component, PropTypes } from "react"
 import R from 'ramda'
 import fetch from 'isomorphic-fetch'
+import { noop } from '../../utils'
 
 
 class Uploader extends Component {
   state = {
     files: [],
+    totalSize: 0,
+    showMaxFilesSizeWarning: false,
   }
-
-//  function resetFileInput() {
-//      this.value = ''
-//      if(!/safari/i.test(navigator.userAgent)){
-//          this.type = ''
-//          this.type = 'file'
-//      }
-//  }
 
   addFile = () => {
     this.fileInput.click()
   }
 
-  removeFile = id => () => {
+  removeFile = file => () => {
     const {
       apiUrl,
       method,
@@ -28,25 +23,38 @@ class Uploader extends Component {
       fetchConfig,
     } = this.props
 
-    fetch(`${apiUrl}${id}/`, {
+    fetch(`${apiUrl}${file.id}/`, {
       method: 'DELETE',
       headers,
       ...fetchConfig,
     })
-      .then(this.onRemovedSubmit(id))
+      .then(this.onRemovedSubmit(file))
       .catch(this.onError)
   }
 
-  onRemovedSubmit = id => response => {
-    response.json()
-      .then(data => {
-        if (data.result === 'success') {
-          const files = R.reject(R.propEq('id', id), this.state.files)
-          this.setState(R.assoc('files', files))
-          this.props.onChange(files)
-        }
-      })
-  }
+  onRemovedSubmit = file => response => response.json()
+    .then(data => {
+      if (data.result === 'success') {
+        const files = R.reject(R.propEq('id', file.id), this.state.files)
+        this.setState(R.assoc('files', files))
+        console.log('removed file size', file.size)
+        // TODO reduce totalSize after file has been removed
+
+//    const { totalSize, showMaxFilesSizeWarning } = this.state
+//    const size = totalSize + file.size
+//    if (totalFilesSizeLimit && size > totalFilesSizeLimit) {
+//      this.setState({ showMaxFilesSizeWarning: true })
+//      return
+//    }
+//
+//    this.setState({ totalSize: size })
+//    if (showMaxFilesSizeWarning) {
+//      this.setState({ showMaxFilesSizeWarning: false })
+//    }
+
+        this.props.onChange(files)
+      }
+    })
 
   onAddSubmit = response => {
     response.json()
@@ -62,8 +70,10 @@ class Uploader extends Component {
   }
 
   handleUpload = event => {
-    Array.prototype.forEach.call(event.target.files, this.upload)
-//    this.resetFileInput()
+    const files = event.target.files
+    this.props.onChangeFilesSelection(files)
+    Array.prototype.forEach.call(files, this.upload)
+    this.resetFileInput()
   }
 
   upload = file => {
@@ -72,7 +82,20 @@ class Uploader extends Component {
       method,
       headers,
       fetchConfig,
+      totalFilesSizeLimit,
     } = this.props
+
+    const { totalSize, showMaxFilesSizeWarning } = this.state
+    const size = totalSize + file.size
+    if (totalFilesSizeLimit && size > totalFilesSizeLimit) {
+      this.setState({ showMaxFilesSizeWarning: true })
+      return
+    }
+
+    this.setState({ totalSize: size })
+    if (showMaxFilesSizeWarning) {
+      this.setState({ showMaxFilesSizeWarning: false })
+    }
 
     const formData = new FormData
     formData.append('file', file)
@@ -87,12 +110,25 @@ class Uploader extends Component {
       .catch(this.onError)
   }
 
+  resetFileInput = () => {
+      this.fileInput.value = ''
+      if(!/safari/i.test(navigator.userAgent)){
+          this.fileInput.type = ''
+          this.fileInput.type = 'file'
+      }
+  }
+
   render() {
     const {
       isMultiple,
       addButtonLabel,
       removeButtonLabel,
+      showFilesList,
     } = this.props
+    const {
+      files,
+      showMaxFilesSizeWarning,
+    } = this.state
     return (
       <div>
         <input
@@ -114,20 +150,29 @@ class Uploader extends Component {
         >
           {addButtonLabel}
         </div>
-        <div className="files-list">
-          {
-            this.state.files.map(file =>
-              <div className="files-list__item" key={file.id}>
-                <span className="files-list-item-name">{file.name}</span>
-                <button
-                  className="files-list-item-remove"
-                  type="button"
-                  onClick={this.removeFile(file.id)}
-                >{removeButtonLabel}</button>
-              </div>
-            )
-          }
-        </div>
+        {
+          showFilesList && (
+            <div className="files-list">
+              {
+                files.map(file =>
+                  <div className="files-list__item" key={file.id}>
+                    <span className="files-list-item-name">{file.name}</span>
+                    <button
+                      className="files-list-item-remove"
+                      type="button"
+                      onClick={this.removeFile(file)}
+                    >{removeButtonLabel}</button>
+                  </div>
+                )
+              }
+            </div>
+          )
+        }
+        {
+          showMaxFilesSizeWarning && (
+            <div className="files-uploader-max-size-warning">Превышен лимит</div>
+          )
+        }
       </div>
     )
   }
@@ -142,6 +187,9 @@ Uploader.propTypes = {
   fetchConfig: PropTypes.object,
   addButtonLabel: PropTypes.string,
   removeButtonLabel: PropTypes.string,
+  onChangeFilesSelection: PropTypes.func,
+  showFilesList: PropTypes.bool,
+  totalFilesSizeLimit: PropTypes.number,
 }
 
 Uploader.defaultProps = {
@@ -151,6 +199,9 @@ Uploader.defaultProps = {
   fetchConfig: {},
   addButtonLabel: 'Добавить файлы',
   removeButtonLabel: 'Удалить',
+  onChangeFilesSelection: noop,
+  showFilesList: true,
+  totalFilesSizeLimit: undefined,
 }
 
 
@@ -171,17 +222,13 @@ class FileWidget extends Component {
           onChange={this.handleChange}
           apiUrl="http://127.0.0.1:8001/attachments-upload/"
           headers={{
-            'X-CSRFToken': 'tR5Jd6h7Zo6nUujcqGyeDbE7RjZSyCbcZPLiZNZBIsrsxiR3tJIsF87JAJ7Vem31',
-            'Cookie': 'csrftoken=yjPLniESMUQFxJYB5oxPSyZtuW5NAwgizTE68l02NTSV2ZOS7PtQwviy88MXUHgw',
+            'X-CSRFToken': '8Zvveu29RivcjUVEr18fRq4vLrcycxxLup9wNn5UHoSDps4SyiEOnvKv3jlf7Dp8',
+            'Cookie': 'csrftoken=8Zvveu29RivcjUVEr18fRq4vLrcycxxLup9wNn5UHoSDps4SyiEOnvKv3jlf7Dp8',
           }}
           fetchConfig={{
             credentials: 'include',
           }}
-        />
-        <input
-          type="hidden"
-          name={id}
-          value={value}
+          totalFilesSizeLimit={1000000}
         />
       </div>
     )

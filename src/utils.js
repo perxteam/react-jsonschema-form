@@ -520,3 +520,5 @@ export function rangeSpec(schema) {
   }
   return spec;
 }
+
+export function noop() {}
