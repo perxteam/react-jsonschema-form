@@ -40,11 +40,11 @@ class Uploader extends Component {
         const size = totalSize - file.size
         this.setState({ totalSize: size, files })
         const { totalFilesSizeLimit } = this.props
+        this.props.onChange(files)
         if (totalFilesSizeLimit && size <= totalFilesSizeLimit * 1024) {
           this.setState({ errorMessage: false })
           return
         }
-        this.props.onChange(files)
       }
     })
 
@@ -69,8 +69,10 @@ class Uploader extends Component {
       totalFilesCountError,
       totalFilesSizeLimitError,
     } = this.props
+
     onChangeFilesSelection(newfiles)
     let { files, totalSize, errorMessage } = this.state
+
     Array.prototype.every.call(newfiles, (file, index) => {
       const {
         apiUrl,
@@ -218,7 +220,7 @@ Uploader.defaultProps = {
   removeButtonLabel: 'Удалить',
   onChangeFilesSelection: noop,
   showFilesList: true,
-  totalFilesCount: 10,
+  totalFilesCount: 1,
   totalFilesCountError: 'Вы не можете загрузить более {} файлов',
   fileSizeMin: 0,
   fileSizeMax: 10000,
