@@ -8,7 +8,7 @@ class Uploader extends Component {
   state = {
     files: [],
     totalSize: 0,
-    showMaxFilesSizeWarning: false,
+    errorMessage: undefined,
   }
 
   addFile = () => {
@@ -36,22 +36,14 @@ class Uploader extends Component {
     .then(data => {
       if (data.result === 'success') {
         const files = R.reject(R.propEq('id', file.id), this.state.files)
-        this.setState(R.assoc('files', files))
-        console.log('removed file size', file.size)
-        // TODO reduce totalSize after file has been removed
-
-//    const { totalSize, showMaxFilesSizeWarning } = this.state
-//    const size = totalSize + file.size
-//    if (totalFilesSizeLimit && size > totalFilesSizeLimit) {
-//      this.setState({ showMaxFilesSizeWarning: true })
-//      return
-//    }
-//
-//    this.setState({ totalSize: size })
-//    if (showMaxFilesSizeWarning) {
-//      this.setState({ showMaxFilesSizeWarning: false })
-//    }
-
+        const { totalSize, errorMessage } = this.state
+        const size = totalSize - file.size
+        this.setState({ totalSize: size, files })
+        const { totalFilesSizeLimit } = this.props
+        if (totalFilesSizeLimit && size <= totalFilesSizeLimit * 1024) {
+          this.setState({ errorMessage: false })
+          return
+        }
         this.props.onChange(files)
       }
     })
@@ -59,9 +51,9 @@ class Uploader extends Component {
   onAddSubmit = response => {
     response.json()
       .then(data => {
-        const files = R.append(data, this.state.files)
-        this.setState(R.assoc('files', files))
-        this.props.onChange(files)
+        this.setState(R.over(R.lensProp('files'), R.append(data)), () => {
+          this.props.onChange(this.state.files)
+        })
       })
   }
 
@@ -70,44 +62,56 @@ class Uploader extends Component {
   }
 
   handleUpload = event => {
-    const files = event.target.files
-    this.props.onChangeFilesSelection(files)
-    Array.prototype.forEach.call(files, this.upload)
-    this.resetFileInput()
-  }
-
-  upload = file => {
+    const newfiles = event.target.files
     const {
-      apiUrl,
-      method,
-      headers,
-      fetchConfig,
-      totalFilesSizeLimit,
+      onChangeFilesSelection,
+      totalFilesCount,
+      totalFilesCountError,
+      totalFilesSizeLimitError,
     } = this.props
+    onChangeFilesSelection(newfiles)
+    let { files, totalSize, errorMessage } = this.state
+    Array.prototype.every.call(newfiles, (file, index) => {
+      const {
+        apiUrl,
+        method,
+        headers,
+        fetchConfig,
+        totalFilesSizeLimit,
+        totalFilesSizeLimitError,
+      } = this.props
 
-    const { totalSize, showMaxFilesSizeWarning } = this.state
-    const size = totalSize + file.size
-    if (totalFilesSizeLimit && size > totalFilesSizeLimit) {
-      this.setState({ showMaxFilesSizeWarning: true })
-      return
-    }
+      if (files.length + index + 1 > totalFilesCount) {
+        errorMessage = totalFilesCountError.replace(/\{\}/, totalFilesCount)
+        return false
+      }
 
-    this.setState({ totalSize: size })
-    if (showMaxFilesSizeWarning) {
-      this.setState({ showMaxFilesSizeWarning: false })
-    }
+      const size = totalSize + file.size
+      if (totalFilesSizeLimit && size > totalFilesSizeLimit * 1024) {
+        errorMessage = totalFilesSizeLimitError
+        return false
+      }
 
-    const formData = new FormData
-    formData.append('file', file)
+      totalSize = size
+      console.log('new total files size', totalSize)
+      if (errorMessage) {
+        errorMessage = undefined
+      }
 
-    fetch(apiUrl, {
-      method,
-      headers,
-      body: formData,
-      ...fetchConfig,
+      const formData = new FormData
+      formData.append('file', file)
+
+      return  fetch(apiUrl, {
+        method,
+        headers,
+        body: formData,
+        ...fetchConfig,
+      })
+        .then(this.onAddSubmit)
+        .catch(this.onError)
     })
-      .then(this.onAddSubmit)
-      .catch(this.onError)
+    this.setState({ errorMessage, totalSize })
+    this.resetFileInput()
   }
 
   resetFileInput = () => {
@@ -127,18 +131,20 @@ class Uploader extends Component {
     } = this.props
     const {
       files,
-      showMaxFilesSizeWarning,
+      errorMessage,
     } = this.state
     return (
-      <div>
+      <div className='files-uploader'>
         <input
           ref={(el) => { this.fileInput = el }}
           type="file"
           multiple={isMultiple}
           onChange={this.handleUpload}
+          className="files-uploader__file-field"
           style={{ display: 'none' }}
         />
         <div
+          className="files-uploader__add-file-button"
           style={{
             cursor: 'pointer',
             backgroundColor: '#ff9c9c',
@@ -152,7 +158,7 @@ class Uploader extends Component {
         </div>
         {
           showFilesList && (
-            <div className="files-list">
+            <div className="files-uploader__files-list files-list">
               {
                 files.map(file =>
                   <div className="files-list__item" key={file.id}>
@@ -169,8 +175,8 @@ class Uploader extends Component {
           )
         }
         {
-          showMaxFilesSizeWarning && (
-            <div className="files-uploader-max-size-warning">Превышен лимит</div>
+          errorMessage && (
+            <div className="files-uploader__max-size-warning">{errorMessage}</div>
           )
         }
       </div>
@@ -189,7 +195,18 @@ Uploader.propTypes = {
   removeButtonLabel: PropTypes.string,
   onChangeFilesSelection: PropTypes.func,
   showFilesList: PropTypes.bool,
+	// Количество файлов которое пользователь может приложить
+  totalFilesCount: PropTypes.number,
+	// Сообщение об ошибке при превышении totalFilesCount
+  totalFilesCountError: PropTypes.string,
+  // Минимальный размер одного файла (в Кб)
+  fileSizeMin: PropTypes.number,
+  // Максимальный размер одного файла (в Кб)
+  fileSizeMax: PropTypes.number,
+  // Максимальный общий размер приложенных файлов (В Кб)
   totalFilesSizeLimit: PropTypes.number,
+	// Разрешенные расширения через запятую
+	fileExtensions: PropTypes.string,
 }
 
 Uploader.defaultProps = {
@@ -201,7 +218,13 @@ Uploader.defaultProps = {
   removeButtonLabel: 'Удалить',
   onChangeFilesSelection: noop,
   showFilesList: true,
-  totalFilesSizeLimit: undefined,
+  totalFilesCount: 10,
+  totalFilesCountError: 'Вы не можете загрузить более {} файлов',
+  fileSizeMin: 0,
+  fileSizeMax: 10000,
+  totalFilesSizeLimit: 20000,
+  totalFilesSizeLimitError: 'Превышен лимит',
+	fileExtensions: undefined,
 }
 
 
@@ -222,13 +245,13 @@ class FileWidget extends Component {
           onChange={this.handleChange}
           apiUrl="http://127.0.0.1:8001/attachments-upload/"
           headers={{
-            'X-CSRFToken': '8Zvveu29RivcjUVEr18fRq4vLrcycxxLup9wNn5UHoSDps4SyiEOnvKv3jlf7Dp8',
-            'Cookie': 'csrftoken=8Zvveu29RivcjUVEr18fRq4vLrcycxxLup9wNn5UHoSDps4SyiEOnvKv3jlf7Dp8',
+            'X-CSRFToken': 'YCeGTvYzzGGW8u4ITCjqdgwKByUofzmbDtVRH2oIHejKgzkw8pFwtwYkSW84FDjJ',
+            'Cookie': 'csrftoken=YCeGTvYzzGGW8u4ITCjqdgwKByUofzmbDtVRH2oIHejKgzkw8pFwtwYkSW84FDjJ',
           }}
           fetchConfig={{
             credentials: 'include',
           }}
-          totalFilesSizeLimit={1000000}
+          totalFilesSizeLimit={100}
         />
       </div>
     )
