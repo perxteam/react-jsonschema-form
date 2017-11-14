@@ -82,6 +82,10 @@ class Uploader extends Component {
         method,
         headers,
         fetchConfig,
+        fileSizeMin,
+        fileSizeMinError,
+        fileSizeMax,
+        fileSizeMaxError,
         totalFilesSizeLimit,
         totalFilesSizeLimitError,
       } = this.props
@@ -94,7 +98,20 @@ class Uploader extends Component {
 
       const size = totalSize + file.size
       if (totalFilesSizeLimit && size > totalFilesSizeLimit * 1024) {
-        this.setState(R.assocPath(['errors', 'totalFilesSizeLimit'], totalFilesSizeLimitError))
+        const error = totalFilesSizeLimitError.replace('{}', totalFilesSizeLimit / 1000)
+        this.setState(R.assocPath(['errors', 'totalFilesSizeLimit'], error))
+        return false
+      }
+
+      if (file.size < fileSizeMin * 1024) {
+        const error = fileSizeMinError.replace('{}', fileSizeMin / 1000)
+        this.setState(R.assocPath(['errors', 'fileSizeMin'], error))
+        return false
+      }
+
+      if (file.size >= fileSizeMax * 1024) {
+        const error = fileSizeMaxError.replace('{}', fileSizeMax / 1000)
+        this.setState(R.assocPath(['errors', 'fileSizeMax'], error))
         return false
       }
 
@@ -114,8 +131,8 @@ class Uploader extends Component {
         .then(this.onAddSubmit)
         .catch(this.onError)
     })
-//    this.setState({ errors, totalSize })
-    this.setState({ totalSize })
+
+    this.setState(R.assoc('totalSize', totalSize))
     this.resetFileInput()
   }
 
@@ -167,9 +184,9 @@ class Uploader extends Component {
               {
                 files.map(file =>
                   <div className="files-list__item" key={file.id}>
-                    <span className="files-list-item-name">{file.name}</span>
+                    <span className="files-list__item-name">{file.name}</span>
                     <button
-                      className="files-list-item-remove"
+                      className="files-list-__tem-remove"
                       type="button"
                       onClick={this.removeFile(file)}
                     >{removeButtonLabel}</button>
@@ -212,8 +229,12 @@ Uploader.propTypes = {
   totalFilesCountError: PropTypes.string,
   // Минимальный размер одного файла (в Кб)
   fileSizeMin: PropTypes.number,
+	// Сообщение об ошибке если размер файла меньше fileSizeMin
+  fileSizeMinError: PropTypes.string,
   // Максимальный размер одного файла (в Кб)
   fileSizeMax: PropTypes.number,
+	// Сообщение об ошибке если размер файла больше fileSizeMax
+  fileSizeMaxError: PropTypes.string,
   // Максимальный общий размер приложенных файлов (В Кб)
   totalFilesSizeLimit: PropTypes.number,
 	// Разрешенные расширения через запятую
@@ -232,9 +253,11 @@ Uploader.defaultProps = {
   totalFilesCount: 1,
   totalFilesCountError: 'Вы не можете загрузить более {} файлов',
   fileSizeMin: 0,
+  fileSizeMinError:  'Размер файла не может быть меньше {} МБ',
   fileSizeMax: 10000,
+  fileSizeMaxError:  'Размер файла не может превышать {} МБ',
   totalFilesSizeLimit: 20000,
-  totalFilesSizeLimitError: 'Превышен лимит',
+  totalFilesSizeLimitError: 'Суммарный размер файлов не может превышать {} МБ',
 	fileExtensions: undefined,
 }
 
@@ -262,8 +285,10 @@ class FileWidget extends Component {
           fetchConfig={{
             credentials: 'include',
           }}
-          totalFilesSizeLimit={100}
+          totalFilesSizeLimit={1000}
           totalFilesCount={5}
+          fileSizeMin={10}
+          fileSizeMax={100}
         />
       </div>
     )
