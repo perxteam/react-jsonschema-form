@@ -67,29 +67,27 @@ class Uploader extends Component {
   handleUpload = event => {
     const newfiles = event.target.files
     const {
+      apiUrl,
       onChangeFilesSelection,
+      method,
+      headers,
+      fetchConfig,
       totalFilesCount,
       totalFilesCountError,
+      fileSizeMin,
+      fileSizeMinError,
+      fileSizeMax,
+      fileSizeMaxError,
+      totalFilesSizeLimit,
       totalFilesSizeLimitError,
+      fileExtensions,
+      fileExtensionsError,
     } = this.props
 
     onChangeFilesSelection(newfiles)
     let { files, totalSize, errors } = this.state
 
     Array.prototype.every.call(newfiles, (file, index) => {
-      const {
-        apiUrl,
-        method,
-        headers,
-        fetchConfig,
-        fileSizeMin,
-        fileSizeMinError,
-        fileSizeMax,
-        fileSizeMaxError,
-        totalFilesSizeLimit,
-        totalFilesSizeLimitError,
-      } = this.props
-
       if (files.length + index + 1 > totalFilesCount) {
         const error = totalFilesCountError.replace('{}', totalFilesCount)
         this.setState(R.assocPath(['errors', 'totalFilesCount'], error))
@@ -112,6 +110,24 @@ class Uploader extends Component {
       if (file.size >= fileSizeMax * 1024) {
         const error = fileSizeMaxError.replace('{}', fileSizeMax / 1000)
         this.setState(R.assocPath(['errors', 'fileSizeMax'], error))
+        return false
+      }
+
+      const extension = file.name.indexOf('.') !== -1
+        ? R.compose(
+            R.toLower,
+            R.last,
+            R.split('.'),
+            R.prop('name')
+          )(file)
+        : undefined
+
+      if (
+        fileExtensions && (!extension ||
+        fileExtensions.replace(/ /g, '').split(',').indexOf(extension) === -1)
+      ) {
+        const error = fileExtensionsError.replace('{}', fileExtensions)
+        this.setState(R.assocPath(['errors', 'fileExtensionsError'], error))
         return false
       }
 
@@ -180,13 +196,13 @@ class Uploader extends Component {
         </div>
         {
           showFilesList && (
-            <div className="files-uploader__files-list files-list">
+            <div className="files-uploader__files-list">
               {
                 files.map(file =>
-                  <div className="files-list__item" key={file.id}>
-                    <span className="files-list__item-name">{file.name}</span>
+                  <div className="files-uploader-files-list__item" key={file.id}>
+                    <span className="files-uploader-files-list__item-name">{file.name}</span>
                     <button
-                      className="files-list-__tem-remove"
+                      className="files-uploader-files-list__item-remove"
                       type="button"
                       onClick={this.removeFile(file)}
                     >{removeButtonLabel}</button>
@@ -237,8 +253,12 @@ Uploader.propTypes = {
   fileSizeMaxError: PropTypes.string,
   // Максимальный общий размер приложенных файлов (В Кб)
   totalFilesSizeLimit: PropTypes.number,
+	// Сообщение об ошибке если суммарный размер файлов превышает totalFilesSizeLimit
+  totalFilesSizeLimitError: PropTypes.string,
 	// Разрешенные расширения через запятую
 	fileExtensions: PropTypes.string,
+	// Сообщение об ошибке если указан файл с запрещенным расширением
+	fileExtensionsError: PropTypes.string,
 }
 
 Uploader.defaultProps = {
@@ -259,6 +279,7 @@ Uploader.defaultProps = {
   totalFilesSizeLimit: 20000,
   totalFilesSizeLimitError: 'Суммарный размер файлов не может превышать {} МБ',
 	fileExtensions: undefined,
+	fileExtensionsError: 'Поддерживаемые форматы файлов: {}',
 }
 
 
@@ -287,8 +308,9 @@ class FileWidget extends Component {
           }}
           totalFilesSizeLimit={1000}
           totalFilesCount={5}
-          fileSizeMin={10}
-          fileSizeMax={100}
+          fileSizeMin={0}
+          fileSizeMax={1000}
+          fileExtensions='go, log'
         />
       </div>
     )
