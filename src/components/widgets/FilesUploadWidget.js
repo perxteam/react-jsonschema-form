@@ -8,7 +8,7 @@ class Uploader extends Component {
   state = {
     files: [],
     totalSize: 0,
-    errorMessage: undefined,
+    errors: {},
   }
 
   addFile = () => {
@@ -36,14 +36,17 @@ class Uploader extends Component {
     .then(data => {
       if (data.result === 'success') {
         const files = R.reject(R.propEq('id', file.id), this.state.files)
-        const { totalSize, errorMessage } = this.state
+        const { totalSize, errors } = this.state
         const size = totalSize - file.size
         this.setState({ totalSize: size, files })
         const { totalFilesSizeLimit } = this.props
         this.props.onChange(files)
         if (totalFilesSizeLimit && size <= totalFilesSizeLimit * 1024) {
-          this.setState({ errorMessage: false })
-          return
+          this.setState(R.dissocPath(['errors', 'totalFilesSizeLimit']))
+        }
+
+        if (files.length < this.props.totalFilesCount) {
+          this.setState(R.dissocPath(['errors', 'totalFilesCount']))
         }
       }
     })
@@ -71,7 +74,7 @@ class Uploader extends Component {
     } = this.props
 
     onChangeFilesSelection(newfiles)
-    let { files, totalSize, errorMessage } = this.state
+    let { files, totalSize, errors } = this.state
 
     Array.prototype.every.call(newfiles, (file, index) => {
       const {
@@ -84,26 +87,25 @@ class Uploader extends Component {
       } = this.props
 
       if (files.length + index + 1 > totalFilesCount) {
-        errorMessage = totalFilesCountError.replace(/\{\}/, totalFilesCount)
+        const error = totalFilesCountError.replace('{}', totalFilesCount)
+        this.setState(R.assocPath(['errors', 'totalFilesCount'], error))
         return false
       }
 
       const size = totalSize + file.size
       if (totalFilesSizeLimit && size > totalFilesSizeLimit * 1024) {
-        errorMessage = totalFilesSizeLimitError
+        this.setState(R.assocPath(['errors', 'totalFilesSizeLimit'], totalFilesSizeLimitError))
         return false
       }
 
       totalSize = size
       console.log('new total files size', totalSize)
-      if (errorMessage) {
-        errorMessage = undefined
-      }
+      this.setState(R.evolve({ errors: R.empty }))
 
       const formData = new FormData
       formData.append('file', file)
 
-      return  fetch(apiUrl, {
+      return fetch(apiUrl, {
         method,
         headers,
         body: formData,
@@ -112,7 +114,8 @@ class Uploader extends Component {
         .then(this.onAddSubmit)
         .catch(this.onError)
     })
-    this.setState({ errorMessage, totalSize })
+//    this.setState({ errors, totalSize })
+    this.setState({ totalSize })
     this.resetFileInput()
   }
 
@@ -133,7 +136,7 @@ class Uploader extends Component {
     } = this.props
     const {
       files,
-      errorMessage,
+      errors,
     } = this.state
     return (
       <div className='files-uploader'>
@@ -177,9 +180,15 @@ class Uploader extends Component {
           )
         }
         {
-          errorMessage && (
-            <div className="files-uploader__max-size-warning">{errorMessage}</div>
-          )
+          errors && Object.keys(errors).length ? (
+            <div className="files-uploader__errors">
+              {
+                Object.keys(errors).map(key =>
+                  <div key={key} className="files-uploader__errors-error">{errors[key]}</div>
+                )
+              }
+            </div>
+          ) : null
         }
       </div>
     )
@@ -254,6 +263,7 @@ class FileWidget extends Component {
             credentials: 'include',
           }}
           totalFilesSizeLimit={100}
+          totalFilesCount={5}
         />
       </div>
     )
