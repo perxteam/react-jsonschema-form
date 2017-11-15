@@ -134,6 +134,10 @@ module.exports = {
     },
     files: {
       "ui:widget": "filesAsync",
+      "ui:fileSizeMin": 0,
+      "ui:fileSizeMax": 10000,
+      "ui:fileExtensions": 'go, log',
+      "ui:totalFilesCount": 5,
     },
     button1: {
       "ui:widget": "button",
