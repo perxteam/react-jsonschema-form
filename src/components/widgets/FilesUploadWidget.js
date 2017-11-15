@@ -12,8 +12,8 @@ class FileWidget extends Component {
     const {
       id,
       value,
+      options,
     } = this.props
-    console.log('props', this.props)
     return (
       <div>
         <Uploader
@@ -26,11 +26,7 @@ class FileWidget extends Component {
           fetchConfig={{
             credentials: 'include',
           }}
-          totalFilesSizeLimit={1000}
-          totalFilesCount={5}
-          fileSizeMin={0}
-          fileSizeMax={1000}
-          fileExtensions='go, log'
+          {...options}
         />
       </div>
     )

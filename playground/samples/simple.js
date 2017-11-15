@@ -49,6 +49,10 @@ module.exports = {
         type: "string",
         title: "Files uploader",
       },
+      images: {
+        type: "string",
+        title: "Image files uploader",
+      },
       disclaimer: {
         type: "string",
         title: "Disclaimer",
@@ -136,8 +140,16 @@ module.exports = {
       "ui:widget": "filesAsync",
       "ui:fileSizeMin": 0,
       "ui:fileSizeMax": 10000,
-      "ui:fileExtensions": 'go, log',
+      "ui:fileExtensions": 'go, log, txt',
       "ui:totalFilesCount": 5,
+      "ui:hint": 'Ваш пояснительный текст'
+    },
+    images: {
+      "ui:widget": "filesAsync",
+      "ui:fileSizeMin": 100,
+      "ui:fileSizeMax": 10000,
+      "ui:fileExtensions": 'jpg',
+      "ui:totalFilesCount": 3,
     },
     button1: {
       "ui:widget": "button",
