@@ -1,11 +1,12 @@
 import React, { Component, PropTypes } from "react"
 import Uploader from 'react-uploader'
+import 'react-uploader/lib/css/main.css'
 
 
-class FileWidget extends Component {
+class FileUploadWidget extends Component {
   handleChange = (value) => {
     const { onChange } = this.props
-    onChange(JSON.stringify(value.map(item => item.id)))
+    onChange(value.map(item => item.id))
   }
 
   render() {
@@ -33,4 +34,4 @@ class FileWidget extends Component {
   }
 }
 
-export default FileWidget
+export default FileUploadWidget

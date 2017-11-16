@@ -13,6 +13,7 @@ import {
   toIdSchema,
   shouldRender,
   getDefaultRegistry,
+  defaultFieldValue,
   setState
 } from "../../utils";
 
@@ -259,6 +260,9 @@ class ArrayField extends Component {
 
   render() {
     const {schema, uiSchema} = this.props;
+    if (!('items' in schema)) {
+      return this.renderStringField();
+    }
     if (isFilesArray(schema, uiSchema)) {
       return this.renderFiles();
     }
@@ -269,6 +273,45 @@ class ArrayField extends Component {
       return this.renderMultiSelect();
     }
     return this.renderNormalArray();
+  }
+
+  renderStringField() {
+    const {
+      schema,
+      name,
+      uiSchema,
+      idSchema,
+      formData,
+      required,
+      disabled,
+      readonly,
+      autofocus,
+      registry,
+      onChange,
+      onBlur
+    } = this.props;
+    const {title, format} = schema;
+    const {widgets, formContext} = registry;
+    const enumOptions = Array.isArray(schema.enum) && optionsList(schema);
+    const defaultWidget = format || (enumOptions ? "select" : "text");
+    const {widget=defaultWidget, placeholder="", ...options} = getUiOptions(uiSchema);
+    const Widget = getWidget(schema, widget, widgets);
+
+    return <Widget
+      options={{...options, enumOptions}}
+      schema={schema}
+      id={idSchema && idSchema.$id}
+      label={title === undefined ? name : title}
+      value={defaultFieldValue(formData, schema)}
+      onChange={onChange}
+      onBlur={onBlur}
+      required={required}
+      disabled={disabled}
+      readonly={readonly}
+      formContext={formContext}
+      autofocus={autofocus}
+      registry={registry}
+      placeholder={placeholder}/>;
   }
 
   renderNormalArray() {
