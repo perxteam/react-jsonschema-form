@@ -46,11 +46,11 @@ module.exports = {
         title: "Phone number",
       },
       files: {
-        type: "string",
+        type: "array",
         title: "Files uploader",
       },
       images: {
-        type: "string",
+        type: "array",
         title: "Image files uploader",
       },
       disclaimer: {

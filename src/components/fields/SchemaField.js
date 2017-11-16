@@ -144,7 +144,8 @@ function SchemaField(props) {
   }
 
   let displayLabel = true;
-  if (schema.type === "array") {
+  const widget = uiSchema["ui:widget"];
+  if (schema.type === "array" && widget !== 'filesAsync') {
     displayLabel = isMultiSelect(schema) || isFilesArray(schema, uiSchema);
   }
   if (schema.type === "object") {

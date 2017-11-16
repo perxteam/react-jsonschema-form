@@ -34,7 +34,6 @@ const widgetMap = {
     staticText: "StaticTextWidget",
     button: "ButtonWidget",
     phoneInput: "PhoneInputWidget",
-    filesAsync: "FilesUploadWidget",
   },
   number: {
     text: "TextWidget",
@@ -55,8 +54,9 @@ const widgetMap = {
   array: {
     select: "SelectWidget",
     checkboxes: "CheckboxesWidget",
-    files: "FileWidget"
-  }
+    files: "FileWidget",
+    filesAsync: "FilesUploadWidget"
+  },
 };
 
 const defaultRegistry = {
@@ -259,16 +259,19 @@ export function orderProperties(properties, order) {
 }
 
 export function isMultiSelect(schema) {
+  if (!('items' in schema)) return false
   return Array.isArray(schema.items.enum) && schema.uniqueItems;
 }
 
 export function isFilesArray(schema, uiSchema) {
+  if (!('items' in schema)) return false
   return (
     schema.items.type === "string" && schema.items.format === "data-url"
   ) || uiSchema["ui:widget"] === "files";
 }
 
 export function isFixedItems(schema) {
+  if (!('items' in schema)) return false
   return Array.isArray(schema.items) &&
          schema.items.length > 0 &&
          schema.items.every(item => isObject(item));
