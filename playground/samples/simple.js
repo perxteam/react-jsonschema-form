@@ -142,7 +142,8 @@ module.exports = {
       "ui:fileSizeMax": 10000,
       "ui:fileExtensions": 'go, log, txt',
       "ui:totalFilesCount": 5,
-      "ui:hint": 'Ваш пояснительный текст'
+      "ui:hint": 'Ваш пояснительный текст',
+      "ui:apiUrl": 'http://127.0.0.1:8001/attachments-upload/',
     },
     images: {
       "ui:widget": "filesAsync",
@@ -150,6 +151,7 @@ module.exports = {
       "ui:fileSizeMax": 10000,
       "ui:fileExtensions": 'jpg',
       "ui:totalFilesCount": 3,
+      "ui:apiUrl": 'http://127.0.0.1:8001/attachments-upload/',
     },
     button1: {
       "ui:widget": "button",
