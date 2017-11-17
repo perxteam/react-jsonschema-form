@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from "react"
 import Uploader from 'react-uploader'
-import 'react-uploader/lib/css/main.css'
 
 
 class FileUploadWidget extends Component {
