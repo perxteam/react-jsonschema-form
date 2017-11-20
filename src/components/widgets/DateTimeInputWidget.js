@@ -34,7 +34,7 @@ function DateTimeInputWidget(props) {
 
 //  console.log('value', value , 'is date valid:', moment(value, dateTimeFormat, true).isValid(), 'js format', new Date(value))
   const { dateTimeWidgetType } = options
-  let dateFormat = false, timeFormat = false, placeholder, format
+  let dateFormat = false, timeFormat = false, placeholder, format, viewMode = 'days'
   if (!dateTimeWidgetType || dateTimeWidgetType === 'dateTime') {
     dateFormat = 'DD.MM.YYYY'
     timeFormat = 'HH:mm'
@@ -48,6 +48,7 @@ function DateTimeInputWidget(props) {
     timeFormat = 'HH:mm'
     placeholder = 'ЧЧ:ММ'
     format = 'HH:mm'
+    viewMode = 'time'
   }
   return (
     <Datetime
@@ -56,6 +57,7 @@ function DateTimeInputWidget(props) {
       dateFormat={dateFormat}
       timeFormat={timeFormat}
       value={value}
+      viewMode={viewMode}
       timeConstraints={{
         minutes: {
           step: 5,
