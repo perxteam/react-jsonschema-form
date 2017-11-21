@@ -18,6 +18,7 @@ class FileUploadWidget extends Component {
       <div>
         <Uploader
           onChange={this.handleChange}
+          actualDelete={false}
           {...options}
         />
       </div>
