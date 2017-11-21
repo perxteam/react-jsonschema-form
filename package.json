@@ -33,7 +33,7 @@
     "react": "^15.0.0"
   },
   "dependencies": {
-    "react-uploader": "https://github.com/perxteam/react-uploader.git#f9d5c15",
+    "react-uploader": "https://github.com/perxteam/react-uploader.git#6c10f80",
     "@oledm/react-telephone-input": "^4.0.10",
     "country-telephone-data": "^0.4.2",
     "isomorphic-fetch": "^2.2.1",
