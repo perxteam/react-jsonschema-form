@@ -45,10 +45,6 @@ module.exports = {
         type: "string",
         title: "Phone number",
       },
-      files: {
-        type: "array",
-        title: "Files uploader",
-      },
       images: {
         type: "array",
         title: "Image files uploader",
@@ -137,22 +133,12 @@ module.exports = {
 С&nbsp;условиями обработки персональных данных и&nbsp;получения рекламы, изложенными на&nbsp;сайте LANDROVER-ROLF.RU (<a href="http://www.landrover-rolf.ru/agreement/" target="_blank"><span style="text-decoration:underline;">Согласие на&nbsp;обработку персональных данных и&nbsp;получение рекламы</span></a>)&nbsp;&mdash; ознакомлен и&nbsp;согласен.`,
       "ui:classNames": "disclaimer_class",
     },
-    files: {
-      "ui:widget": "filesAsync",
-      "ui:fileSizeMin": 0,
-      "ui:fileSizeMax": 10000,
-      "ui:fileExtensions": 'go, log, txt',
-      "ui:totalFilesCount": 5,
-      "ui:hint": 'Ваш пояснительный текст',
-      "ui:apiUrl": 'http://127.0.0.1:8001/attachments-upload/',
-    },
     images: {
       "ui:widget": "filesAsync",
       "ui:fileSizeMin": 100,
       "ui:fileSizeMax": 10000,
-      "ui:fileExtensions": 'jpg',
-      "ui:totalFilesCount": 3,
-      "ui:apiUrl": 'http://127.0.0.1:8001/attachments-upload/',
+      "ui:totalFilesCount": 5,
+      "ui:apiUrl": 'http://127.0.0.1:8080/forms/api/v1/uploads',
     },
     button1: {
       "ui:widget": "button",

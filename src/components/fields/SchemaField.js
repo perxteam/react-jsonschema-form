@@ -1,4 +1,5 @@
 import React, {PropTypes} from "react";
+import R from 'ramda'
 
 import {
   isMultiSelect,
@@ -31,41 +32,45 @@ function getFieldComponent(schema, uiSchema, fields) {
 }
 
 function Label(props) {
-  const {label, required, id} = props;
+  const {label, required, id, cssPrefix} = props;
   if (!label) {
     // See #312: Ensure compatibility with old versions of React.
     return <div/>;
   }
   return (
-    <label className="control-label" htmlFor={id}>
+    <label className={`${cssPrefix}__control-label`} htmlFor={id}>
       {required ? label + REQUIRED_FIELD_SYMBOL : label}
     </label>
   );
 }
 
 function Help(props) {
-  const {help} = props;
+  const {help, cssPrefix} = props;
   if (!help) {
     // See #312: Ensure compatibility with old versions of React.
     return <div/>;
   }
   if (typeof help === "string") {
-    return <p className="help-block">{help}</p>;
+    return <p className={`${cssPrefix}__help-block`}>{help}</p>;
   }
-  return <div className="help-block">{help}</div>;
+  return <div className={`${cssPrefix}__help-block`}>{help}</div>;
 }
 
 function ErrorList(props) {
-  const {errors = []} = props;
+  const {errors = [], cssPrefix} = props;
   if (errors.length === 0) {
     return <div/>;
   }
   return (
     <div>
       <p/>
-      <ul className="error-detail bs-callout bs-callout-info">{
+      <ul className={`
+         ${cssPrefix}__error-detail
+         ${cssPrefix}__bs-callout
+         ${cssPrefix}__bs-callout-info
+      `}>{
         errors.map((error, index) => {
-          return <li className="text-danger" key={index}>{error}</li>;
+          return <li className={`${cssPrefix}__text-danger`} key={index}>{error}</li>;
         })
       }</ul>
     </div>
@@ -84,6 +89,7 @@ function DefaultTemplate(props) {
     hidden,
     required,
     displayLabel,
+    formContext: { cssPrefix },
   } = props;
   if (hidden) {
     return children;
@@ -91,7 +97,10 @@ function DefaultTemplate(props) {
 
   return (
     <div className={classNames}>
-      {displayLabel ? <Label label={label} required={required} id={id}/> : null}
+      {displayLabel
+          ? <Label label={label} required={required} id={id} cssPrefix={cssPrefix} />
+          : null
+      }
       {displayLabel && description ? description : null}
       {children}
       {errors}
@@ -177,11 +186,12 @@ function SchemaField(props) {
   const errors = __errors;
   const help = uiSchema["ui:help"];
   const hidden = uiSchema["ui:widget"] === "hidden";
+  const cssPrefix = R.prop('cssPrefix', formContext)
 
   const classNames = [
-    "form-group",
-    "field",
-    `field-${type}`,
+    `${cssPrefix}__form-group`,
+    `${cssPrefix}__field`,
+    `${cssPrefix}__field-${type}`,
 //    errors && errors.length > 0 ? "field-error has-error" : "",
 //    errors && errors.length > 0 && !formContext.preview ? "field-error has-error" : "",
     errors && errors.length > 0 && !formContext.preview ? "error" : "",
@@ -193,9 +203,9 @@ function SchemaField(props) {
                                    description={description}
                                    formContext={formContext}/>,
     rawDescription: description,
-    help: <Help help={help}/>,
+    help: <Help help={help} cssPrefix={cssPrefix} />,
     rawHelp: typeof help === "string" ? help : undefined,
-    errors: <ErrorList errors={errors}/>,
+    errors: <ErrorList errors={errors} cssPrefix={cssPrefix} />,
     rawErrors: errors,
     id,
     label,

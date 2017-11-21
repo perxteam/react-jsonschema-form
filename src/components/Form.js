@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from "react";
+import R from 'ramda'
 
 import ErrorList from "./ErrorList";
 import {
@@ -28,7 +29,8 @@ const initialContext = {
   },
   isDirty: function (id) {
     return this.formControlState[id] === 'dirty'
-  }
+  },
+  cssPrefix: 'form-widget',
 }
 
 export default class Form extends Component {
@@ -97,12 +99,12 @@ export default class Form extends Component {
     this.setState({ formData: newData })
   }
 
-  renderErrors() {
+  renderErrors({ cssPrefix }) {
     const {status, errors} = this.state;
     const {showErrorList} = this.props;
 
     if (status !== "editing" && errors.length && showErrorList != false) {
-      return <ErrorList errors={errors}/>;
+      return <ErrorList cssPrefix={cssPrefix} errors={errors}/>;
     }
     return null;
   }
@@ -207,9 +209,10 @@ export default class Form extends Component {
 
     const {schema, uiSchema, formData, errorSchema, idSchema} = this.state;
     const registry = this.getRegistry();
+    const cssPrefix = R.path(['formContext', 'cssPrefix'], registry)
     const _SchemaField = registry.fields.SchemaField;
     return (
-      <form className={className ? className : "rjsf"}
+      <form className={className ? `${cssPrefix}__${className}` : `${cssPrefix}__rjsf`}
         id={id}
         name={name}
         method={method}
@@ -221,7 +224,7 @@ export default class Form extends Component {
         noValidate={noHtml5Validate}
         onSubmit={this.onSubmit}
       >
-        {this.renderErrors()}
+        {this.renderErrors({ cssPrefix })}
         <_SchemaField
           schema={schema}
           uiSchema={uiSchema}

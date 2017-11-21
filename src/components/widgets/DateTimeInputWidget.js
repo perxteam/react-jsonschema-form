@@ -50,6 +50,7 @@ function DateTimeInputWidget(props) {
     format = 'HH:mm'
     viewMode = 'time'
   }
+  const { cssPrefix } = formContext
   return (
     <Datetime
       locale="ru"
@@ -65,7 +66,9 @@ function DateTimeInputWidget(props) {
       }}
       inputProps={
         {
-          className: formContext && formContext.preview ? 'ant-input ant-input-lg' : 'form-control',
+          className: formContext && formContext.preview
+            ? 'ant-input ant-input-lg'
+            : `${cssPrefix}__form-control`,
           placeholder,
         }
       }

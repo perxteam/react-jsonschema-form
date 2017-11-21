@@ -1,6 +1,6 @@
 import React, {PropTypes} from "react";
 
-function MaskedInputWidget(props) {
+function StaticTextWidget(props) {
   const {
     value,
     readonly,
@@ -22,4 +22,4 @@ function MaskedInputWidget(props) {
   )
 }
 
-export default MaskedInputWidget;
+export default StaticTextWidget;

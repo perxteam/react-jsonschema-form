@@ -18,13 +18,6 @@ class FileUploadWidget extends Component {
       <div>
         <Uploader
           onChange={this.handleChange}
-          headers={{
-            'X-CSRFToken': 'gRNeMHWm7q5dnKkMnheghjA7u2kenRbXdO9yYG2vOYv6ZfmkyydO2yXlLwIayB9s',
-            'Cookie': 'csrftoken=gRNeMHWm7q5dnKkMnheghjA7u2kenRbXdO9yYG2vOYv6ZfmkyydO2yXlLwIayB9s',
-          }}
-          fetchConfig={{
-            credentials: 'include',
-          }}
           {...options}
         />
       </div>

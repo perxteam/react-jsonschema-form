@@ -103,9 +103,10 @@ class ObjectField extends Component {
       const properties = Object.keys(schema.properties);
       orderedProperties = orderProperties(properties, uiSchema["ui:order"]);
     } catch (err) {
+      const { cssPrefix } = formContext
       return (
         <div>
-          <p className="config-error" style={{color: "red"}}>
+          <p className={`${cssPrefix}__config-error`} style={{color: "red"}}>
             Invalid {name || "root"} object field configuration:
             <em>{err.message}</em>.
           </p>

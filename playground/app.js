@@ -368,7 +368,10 @@ class App extends Component {
               validate={validate}
               transformErrors={transformErrors}
               noHtml5Validate
-              formContext={{ preview: false }}
+              formContext={{
+                preview: false,
+                cssPrefix: "form-service-widget",
+              }}
               validateOnBlur={true}
               showErrorList={false}
               onError={log("errors")} />}

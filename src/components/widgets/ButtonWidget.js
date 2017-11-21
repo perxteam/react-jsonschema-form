@@ -14,9 +14,10 @@ function ButtonWidget(props) {
     ...inputProps
   } = props;
 
+  const { cssPrefix } = formContext
   const mask = options.mask || ''
   const classNames = [
-    formContext.preview ? "ant-btn" : "btn btn-primary",
+    formContext.preview ? "ant-btn" : `${cssPrefix}__btn ${cssPrefix}__btn-primary`,
     options.classNames,
   ].join(" ").trim();
   return (
