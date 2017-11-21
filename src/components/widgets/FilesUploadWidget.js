@@ -1,11 +1,15 @@
 import React, { Component, PropTypes } from "react"
+import R from 'ramda'
 import Uploader from 'react-uploader'
 
 
 class FileUploadWidget extends Component {
   handleChange = (value) => {
     const { onChange } = this.props
-    onChange(value.map(item => item.id))
+    onChange(R.compose(
+      R.ifElse(R.isEmpty, R.always(undefined), R.identity),
+      R.map(R.prop('id'))
+    )(value))
   }
 
   render() {
