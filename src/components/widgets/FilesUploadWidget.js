@@ -17,11 +17,14 @@ class FileUploadWidget extends Component {
       id,
       value,
       options,
+      formContext: { cssPrefix },
     } = this.props
+
     return (
       <div>
         <Uploader
           onChange={this.handleChange}
+          cssPrefix={cssPrefix}
           actualDelete={false}
           {...options}
         />
