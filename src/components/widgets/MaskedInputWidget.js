@@ -16,8 +16,9 @@ function MaskedInputWidget(props) {
     ...inputProps
   } = props;
 
+  const { cssPrefix } = formContext
   const classNames = [
-    "form-control",
+    `${cssPrefix}__form-control`,
     formContext.preview ? "ant-input ant-input-lg" : "",
     options.inputClassNames,
   ].join(" ").trim();

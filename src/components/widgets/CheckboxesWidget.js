@@ -21,7 +21,7 @@ function CheckboxesWidget(props) {
     <div className={`${cssPrefix}__checkboxes`} id={id}>{
       enumOptions.map((option, index) => {
         const checked = value.indexOf(option.value) !== -1;
-        const disabledCls = disabled ? "disabled" : "";
+        const disabledCls = disabled ? `${cssPrefix}__disabled` : "";
         let checkbox
         if (formContext.preview) {
           const { Checkbox } = formContext
@@ -65,11 +65,11 @@ function CheckboxesWidget(props) {
           );
         }
         return inline ? (
-          <label key={index} className={`${cssPrefix}__checkbox-inline ${cssPrefix}__${disabledCls}`}>
+          <label key={index} className={`${cssPrefix}__checkbox-inline ${disabledCls}`}>
             {checkbox}
           </label>
         ) : (
-          <div key={index} className={`${cssPrefix}__checkbox ${cssPrefix}__${disabledCls}`}>
+          <div key={index} className={`${cssPrefix}__checkbox ${disabledCls}`}>
             <label>
               {checkbox}
             </label>

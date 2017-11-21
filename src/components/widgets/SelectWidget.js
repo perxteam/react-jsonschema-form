@@ -71,12 +71,13 @@ function SelectWidget({
     )
   }
 
+  const { cssPrefix } = formContext
   return (
     <select
       id={id}
       multiple={multiple}
       placeholder={placeholder}
-      className= "form-control"
+      className={`${cssPrefix}__form-control`}
       value={typeof value === "undefined" ? emptyValue : value}
       required={required}
       disabled={disabled}

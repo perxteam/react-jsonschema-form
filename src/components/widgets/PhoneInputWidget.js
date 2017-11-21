@@ -40,15 +40,12 @@ class PhoneInputWidget extends React.Component {
       placeholder,
       formContext,
     } = this.props
-//    console.log('Countries available:', options.onlyCountries)
-//        flagsImagePath={`${options.apiRoot}/assets/images/flags.png`}
-//        onChangeCountry={(country) => {
-//          console.log('country from widget', country)
-//        }}
+    const { cssPrefix } = formContext
     return (
       <ReactTelInput
         value={value}
         name={id}
+        className={`${cssPrefix}__phone-input`}
         defaultCountry={options.country}
         flagsImagePath={`${options.apiRoot}/assets/images/flags.png`}
         onlyCountries={options.onlyCountries}

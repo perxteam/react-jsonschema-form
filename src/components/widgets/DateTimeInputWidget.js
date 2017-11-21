@@ -55,6 +55,7 @@ function DateTimeInputWidget(props) {
     <Datetime
       locale="ru"
       name={id}
+      className={`${cssPrefix}__date-time-picker`}
       dateFormat={dateFormat}
       timeFormat={timeFormat}
       value={value}
