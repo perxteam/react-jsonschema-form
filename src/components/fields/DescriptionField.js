@@ -1,15 +1,16 @@
 import React, {PropTypes} from "react";
 
 function DescriptionField(props) {
-  const {id, description} = props;
+  const {id, description, formContext} = props;
   if (!description) {
     // See #312: Ensure compatibility with old versions of React.
     return <div/>;
   }
+  const { cssPrefix } = formContext
   if (typeof description === "string") {
-    return <p id={id} className="field-description">{description}</p>;
+    return <p id={id} className={`${cssPrefix}__field-description`}>{description}</p>;
   } else {
-    return <div id={id} className="field-description">{description}</div>;
+    return <div id={id} className={`${cssPrefix}__field-description`}>{description}</div>;
   }
 }
 

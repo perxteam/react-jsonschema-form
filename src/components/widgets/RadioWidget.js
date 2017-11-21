@@ -17,13 +17,13 @@ function RadioWidget({
   // checked={checked} has been moved above name={name}, As mentioned in #349;
   // this is a temporary fix for radio button rendering bug in React, facebook/react#7630.
   if (formContext.preview) {
-    const { Radio } = formContext
+    const { Radio, cssPrefix } = formContext
     const RadioGroup = Radio.Group
     const radios = enumOptions.map((option, i) => {
       const checked = option.value === value;
       const disabledCls = disabled ? "disabled" : "";
       return (
-        <div key={i} className={`radio ${disabledCls}`}>
+        <div key={i} className={`${cssPrefix}__radio ${cssPrefix}__${disabledCls}`}>
           <Radio
             checked={checked}
             name={name}
@@ -42,8 +42,9 @@ function RadioWidget({
       </RadioGroup>
     )
   }
+  const { cssPrefix } = formContext
   return (
-    <div className="field-radio-group">{
+    <div className={`${cssPrefix}__field-radio-group`}>{
       enumOptions.map((option, i) => {
         const checked = option.value === value;
         const disabledCls = disabled ? "disabled" : "";
@@ -61,11 +62,11 @@ function RadioWidget({
         );
 
         return inline ? (
-          <label key={i} className={`radio-inline ${disabledCls}`}>
+          <label key={i} className={`${cssPrefix}__radio-inline ${cssPrefix}__${disabledCls}`}>
             {radio}
           </label>
         ) : (
-          <div key={i} className={`radio ${disabledCls}`}>
+          <div key={i} className={`${cssPrefix}__radio ${cssPrefix}__${disabledCls}`}>
             <label>
               {radio}
             </label>

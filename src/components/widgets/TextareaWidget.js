@@ -19,8 +19,9 @@ function TextareaWidget({
     return onChange(value === "" ? undefined : value);
   };
 
+  const { cssPrefix } = formContext
   const classNames = [
-    "form-control",
+    `${cssPrefix}__form-control`,
     formContext.preview ? "ant-input" : "",
     options.inputClassNames,
   ].join(" ").trim();

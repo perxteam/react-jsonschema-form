@@ -16,11 +16,12 @@ function deselectValue(value, selected) {
 function CheckboxesWidget(props) {
   const {id, disabled, options, value, autofocus, onChange, formContext} = props;
   const {enumOptions, inline} = options;
+  const { cssPrefix } = formContext
   return (
-    <div className="checkboxes" id={id}>{
+    <div className={`${cssPrefix}__checkboxes`} id={id}>{
       enumOptions.map((option, index) => {
         const checked = value.indexOf(option.value) !== -1;
-        const disabledCls = disabled ? "disabled" : "";
+        const disabledCls = disabled ? `${cssPrefix}__disabled` : "";
         let checkbox
         if (formContext.preview) {
           const { Checkbox } = formContext
@@ -64,11 +65,11 @@ function CheckboxesWidget(props) {
           );
         }
         return inline ? (
-          <label key={index} className={`checkbox-inline ${disabledCls}`}>
+          <label key={index} className={`${cssPrefix}__checkbox-inline ${disabledCls}`}>
             {checkbox}
           </label>
         ) : (
-          <div key={index} className={`checkbox ${disabledCls}`}>
+          <div key={index} className={`${cssPrefix}__checkbox ${disabledCls}`}>
             <label>
               {checkbox}
             </label>

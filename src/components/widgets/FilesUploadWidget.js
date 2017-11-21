@@ -1,11 +1,15 @@
 import React, { Component, PropTypes } from "react"
+import R from 'ramda'
 import Uploader from 'react-uploader'
 
 
 class FileUploadWidget extends Component {
   handleChange = (value) => {
     const { onChange } = this.props
-    onChange(value.map(item => item.id))
+    onChange(R.compose(
+      R.ifElse(R.isEmpty, R.always(undefined), R.identity),
+      R.map(R.prop('id'))
+    )(value))
   }
 
   render() {
@@ -18,13 +22,7 @@ class FileUploadWidget extends Component {
       <div>
         <Uploader
           onChange={this.handleChange}
-          headers={{
-            'X-CSRFToken': 'gRNeMHWm7q5dnKkMnheghjA7u2kenRbXdO9yYG2vOYv6ZfmkyydO2yXlLwIayB9s',
-            'Cookie': 'csrftoken=gRNeMHWm7q5dnKkMnheghjA7u2kenRbXdO9yYG2vOYv6ZfmkyydO2yXlLwIayB9s',
-          }}
-          fetchConfig={{
-            credentials: 'include',
-          }}
+          actualDelete={false}
           {...options}
         />
       </div>

@@ -17,8 +17,9 @@ function BaseInput(props) {
     ...inputProps
   } = props;
 //  console.log('Input context', formContext, 'props', props)
+  const { cssPrefix } = formContext
   const classNames = [
-    "form-control",
+    `${cssPrefix}__form-control`,
     formContext.preview ? "ant-input ant-input-lg" : "",
     options.inputClassNames,
   ].join(" ").trim();
