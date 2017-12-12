@@ -24,7 +24,10 @@ class DateTimeInputWidget extends React.Component {
     const {
       value,
       onChange,
-      options: { dateTimeWidgetType },
+      placeholder,
+      options: {
+        dateTimeWidgetType,
+      },
     } = this.props;
 
     const [date = '', time = ''] = value ? value.split(' ') : []
@@ -47,16 +50,16 @@ class DateTimeInputWidget extends React.Component {
       M = '[0-9]'
     }
 
-    let placeholder
+    let defaultPlaceholder
     let mask
     if (!dateTimeWidgetType || dateTimeWidgetType === 'dateTime') {
-      placeholder =  'ДД.ММ.ГГГГ чч:мм'
+      defaultPlaceholder =  'ДД.ММ.ГГГГ чч:мм'
       mask = 'dD.mM.y999 12:39'
     } else if (dateTimeWidgetType === 'date') {
-      placeholder = 'ДД.ММ.ГГГГ'
+      defaultPlaceholder = 'ДД.ММ.ГГГГ'
       mask = 'dD.mM.y999'
     } else if (dateTimeWidgetType === 'time') {
-      placeholder = 'ЧЧ:ММ'
+      defaultPlaceholder = 'ЧЧ:ММ'
       mask = '12:39'
     }
 
@@ -64,7 +67,7 @@ class DateTimeInputWidget extends React.Component {
       <InputElement
         mask={mask}
         maskChar={null}
-        placeholder={placeholder}
+        placeholder={placeholder || defaultPlaceholder}
         onChange={event => onChange(event.target.value)}
         value={value || ''}
         formatChars={{
@@ -98,19 +101,16 @@ class DateTimeInputWidget extends React.Component {
 
   //  console.log('value', value , 'is date valid:', moment(value, dateTimeFormat, true).isValid(), 'js format', new Date(value))
     const { dateTimeWidgetType } = options
-    let dateFormat = false, timeFormat = false, placeholder, format, viewMode = 'days'
+    let dateFormat = false, timeFormat = false, format, viewMode = 'days'
     if (!dateTimeWidgetType || dateTimeWidgetType === 'dateTime') {
       dateFormat = 'DD.MM.YYYY'
       timeFormat = 'HH:mm'
-      placeholder =  'ДД.ММ.ГГГГ чч:мм'
       format = 'DD.MM.YYYY HH:mm'
     } else if (dateTimeWidgetType === 'date') {
       dateFormat = 'DD.MM.YYYY'
-      placeholder = 'ДД.ММ.ГГГГ'
       format = 'DD.MM.YYYY'
     } else if (dateTimeWidgetType === 'time') {
       timeFormat = 'HH:mm'
-      placeholder = 'ЧЧ:ММ'
       format = 'HH:mm'
       viewMode = 'time'
     }
@@ -135,7 +135,6 @@ class DateTimeInputWidget extends React.Component {
             className: formContext && formContext.preview
               ? 'ant-input ant-input-lg'
               : `${cssPrefix}__form-control`,
-            placeholder,
           }
         }
         isValidDate={isValid}
