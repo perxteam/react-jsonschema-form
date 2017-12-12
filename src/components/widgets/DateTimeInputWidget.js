@@ -24,9 +24,11 @@ class DateTimeInputWidget extends React.Component {
     const {
       value,
       onChange,
+      options: { dateTimeWidgetType },
     } = this.props;
 
-    const [day = '', month = '', year = ''] = value ? value.split('.') : []
+    const [date = '', time = ''] = value ? value.split(' ') : []
+    const [day = '', month = '', year = ''] = date ? date.split('.') : []
     let D
     if (day.startsWith('3')) {
       D = '[01]'
@@ -44,11 +46,25 @@ class DateTimeInputWidget extends React.Component {
     } else {
       M = '[0-9]'
     }
+
+    let placeholder
+    let mask
+    if (!dateTimeWidgetType || dateTimeWidgetType === 'dateTime') {
+      placeholder =  'ДД.ММ.ГГГГ чч:мм'
+      mask = 'dD.mM.y999 12:39'
+    } else if (dateTimeWidgetType === 'date') {
+      placeholder = 'ДД.ММ.ГГГГ'
+      mask = 'dD.mM.y999'
+    } else if (dateTimeWidgetType === 'time') {
+      placeholder = 'ЧЧ:ММ'
+      mask = '12:39'
+    }
+
     return (
       <InputElement
-        mask='dD.mM.y999'
+        mask={mask}
         maskChar={null}
-        placeholder='ДД.ММ.ГГГГ'
+        placeholder={placeholder}
         onChange={event => onChange(event.target.value)}
         value={value || ''}
         formatChars={{
@@ -57,7 +73,10 @@ class DateTimeInputWidget extends React.Component {
           'D': D,
           'm': '[01]',
           'M': M,
-          'y': '[12]'
+          'y': '[12]',
+          '1': '[0-2]',
+          '2': time.startsWith('2') ? '[0-3]' : '[0-9]',
+          '3': '[0-5]',
         }}
       />
     )
