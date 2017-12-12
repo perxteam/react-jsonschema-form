@@ -41,7 +41,7 @@
     "lodash.topath": "^4.5.2",
     "moment": "^2.18.1",
     "ramda": "^0.23.0",
-    "react-datetime": "^2.8.10",
+    "react-datetime": "2.11.1",
     "react-input-mask": "^0.7.5",
     "setimmediate": "^1.0.5"
   },
