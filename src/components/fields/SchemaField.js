@@ -188,13 +188,14 @@ function SchemaField(props) {
   const hidden = uiSchema["ui:widget"] === "hidden";
   const cssPrefix = R.prop('cssPrefix', formContext)
 
+//  console.log('cssPrefix', cssPrefix)
   const classNames = [
     `${cssPrefix}__form-group`,
     `${cssPrefix}__field`,
     `${cssPrefix}__field-${type}`,
 //    errors && errors.length > 0 ? "field-error has-error" : "",
 //    errors && errors.length > 0 && !formContext.preview ? "field-error has-error" : "",
-    errors && errors.length > 0 && !formContext.preview ? "error" : "",
+    errors && errors.length > 0 && !formContext.preview ? `${cssPrefix}__field-error` : "",
     uiSchema.classNames,
   ].join(" ").trim();
 
