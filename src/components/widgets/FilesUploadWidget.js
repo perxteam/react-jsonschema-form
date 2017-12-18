@@ -26,6 +26,7 @@ class FileUploadWidget extends Component {
           onChange={this.handleChange}
           cssPrefix={cssPrefix}
           actualDelete={false}
+          value={value}
           {...options}
         />
       </div>
