@@ -75,7 +75,7 @@ function SelectWidget({
   const { cssPrefix } = formContext
   return (
     <Select2
-      data={enumOptions.map(({value: id, label: text}, i) => ({ id, text }))}
+      data={enumOptions.map(({value: id, label: text}) => ({ id, text }))}
       className={`${cssPrefix}__form-control`}
       id={id}
       options={{
