@@ -4,7 +4,7 @@ module.exports = {
     description: "A simple form example.",
     type: "object",
 //    required: ["firstName", "lastName", "checkbox", "phone"],
-//    required: ["lastName", "checkbox", "phone"],
+    required: ["lastName", "checkbox", "phone", "appeal"],
     properties: {
       firstName: {
         type: "string",
@@ -44,6 +44,18 @@ module.exports = {
       phone: {
         type: "string",
         title: "Phone number",
+      },
+      appeal: {
+        "enum": [
+          "Mr",
+          "Mrs"
+        ],
+        "type": "string",
+        "enumNames": [
+          "Уважаемый",
+          "Уважаемая"
+        ],
+        "title": "Обращение"
       },
       images: {
         type: "array",
@@ -139,6 +151,9 @@ module.exports = {
       "ui:fileSizeMax": 10000,
       "ui:totalFilesCount": 5,
       "ui:apiUrl": 'http://127.0.0.1:8080/forms/api/v1/uploads',
+    },
+    appeal: {
+      "ui:widget": "select"
     },
     button1: {
       "ui:widget": "button",
