@@ -20,7 +20,7 @@ function isValid(current) {
 }
 
 class DateTimeInputWidget extends React.Component {
-  renderInput = () => {
+  renderInput = (props, openCalendar) => {
     const {
       value,
       onChange,
@@ -69,6 +69,7 @@ class DateTimeInputWidget extends React.Component {
         maskChar={null}
         placeholder={placeholder || defaultPlaceholder}
         onChange={event => onChange(event.target.value)}
+        onClick={openCalendar}
         value={value || ''}
         formatChars={{
           '9': '[0-9]',
