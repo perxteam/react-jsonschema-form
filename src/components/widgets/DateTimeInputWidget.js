@@ -28,6 +28,7 @@ class DateTimeInputWidget extends React.Component {
       options: {
         dateTimeWidgetType,
       },
+      formContext,
     } = this.props;
 
     const [date = '', time = ''] = value ? value.split(' ') : []
@@ -63,11 +64,16 @@ class DateTimeInputWidget extends React.Component {
       mask = '12:39'
     }
 
+    const { cssPrefix } = formContext
     return (
       <InputElement
         mask={mask}
         maskChar={null}
         placeholder={placeholder || defaultPlaceholder}
+        className={formContext && formContext.preview
+          ? 'ant-input ant-input-lg'
+          : `${cssPrefix}__form-control`
+        }
         onChange={event => onChange(event.target.value)}
         onClick={openCalendar}
         value={value || ''}
@@ -131,13 +137,6 @@ class DateTimeInputWidget extends React.Component {
             step: 5,
           }
         }}
-        inputProps={
-          {
-            className: formContext && formContext.preview
-              ? 'ant-input ant-input-lg'
-              : `${cssPrefix}__form-control`,
-          }
-        }
         isValidDate={isValid}
         onChange={(value) => {
           onChange(formatDateCustom(format)(value))
