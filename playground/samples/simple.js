@@ -4,7 +4,7 @@ module.exports = {
     description: "A simple form example.",
     type: "object",
 //    required: ["firstName", "lastName", "checkbox", "phone"],
-    required: ["lastName", "checkbox", "phone", "appeal"],
+    required: ["lastName", "checkbox", "phone", "datetime"],
     properties: {
       firstName: {
         type: "string",
