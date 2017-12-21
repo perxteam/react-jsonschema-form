@@ -84,7 +84,7 @@ class DateTimeInputWidget extends React.Component {
         onBlur={onBlur && (({ target: { value } }) => {
           if (/\d/.test(value)) {
             formContext.setDirty(id)
-            onChange(formatDateCustom(format)(value))
+            onChange(value)
           } else {
             onChange(undefined)
           }
