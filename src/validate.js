@@ -143,11 +143,15 @@ export function validateFormDataOnSubmit(formData, schema, customValidate, trans
 }
 
 
-export default function validateFormData(formData, schema, customValidate, transformErrors, context) {
+export default function validateFormData(formData, schema, customValidate, transformErrors, context, uiSchema) {
   let needValidateFields = []
+  let dirtyFields = []
   Object.keys(context.formControlState).forEach((key) => {
     const value = context.formControlState[key]
 //    console.log('key', key, 'value from formData', formData[key], 'value from context', value)
+    if (value === 'dirty') {
+      dirtyFields = dirtyFields.concat(key)
+    }
     if (value) {
       needValidateFields = needValidateFields.concat(key)
     }
@@ -177,7 +181,7 @@ export default function validateFormData(formData, schema, customValidate, trans
     return {errors, errorSchema};
   }
 
-  const errorHandler = customValidate(formData, createErrorHandler(formData));
+  const errorHandler = customValidate(formData, createErrorHandler(formData), dirtyFields);
   const userErrorSchema = unwrapErrorHandler(errorHandler);
   const newErrorSchema = mergeObjects(errorSchema, userErrorSchema, true);
   // XXX: The errors list produced is not fully compliant with the format
