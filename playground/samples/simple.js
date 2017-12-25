@@ -37,8 +37,7 @@ module.exports = {
         title: "DateTime",
       },
       checkbox: {
-        hideLabel: true,
-        title: "Check me",
+        title: 'Go on and <a href="http://ya.ru">Check me</a>',
         type: "boolean",
       },
       phone: {
