@@ -25,13 +25,14 @@ function CheckboxWidget({
         disabled={disabled}
         autoFocus={autofocus}
         onChange={(event) => {
-//          console.log('checkbox onChange')
-//          onBlur(event.target.checked)
           onChange(event.target.checked)
         }}
         onBlur={() => console.log('checkbox onBlur')}
       >
-        {label}
+        <span dangerouslySetInnerHTML={{
+            __html: label,
+          }}
+        />
       </Checkbox>
     )
   }
@@ -45,14 +46,13 @@ function CheckboxWidget({
           disabled={disabled}
           autoFocus={autofocus}
           onChange={(event) => {
-//            console.log('checkbox onChange')
             onChange(event.target.checked)
-//            setTimeout(() => {
-//              onBlur()
-//            }, 10)
           }}
         />
-        <span>{label}</span>
+        <span dangerouslySetInnerHTML={{
+            __html: label,
+          }}
+        />
       </label>
     </div>
   );
