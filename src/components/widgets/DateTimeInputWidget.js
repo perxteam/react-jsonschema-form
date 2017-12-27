@@ -14,9 +14,15 @@ export const formatDateCustom = (format) => (date) => {
 
 export const formatDate = formatDateCustom('DD.MM.YYYY HH:mm')
 
-function isValid(current) {
-  const yesterday = Datetime.moment().subtract( 1, 'day' )
-  return current.isAfter(yesterday)
+const validateDates = (availableDates) => (current) => {
+  if (availableDates === 'future') {
+    const yesterday = Datetime.moment().subtract(1, 'day')
+    return current.isAfter(yesterday)
+  }
+  if (availableDates === 'past') {
+    return moment(current).isBefore()
+  }
+  return true
 }
 
 class DateTimeInputWidget extends React.Component {
@@ -123,7 +129,7 @@ class DateTimeInputWidget extends React.Component {
     } = this.props;
 
   //  console.log('value', value , 'is date valid:', moment(value, dateTimeFormat, true).isValid(), 'js format', new Date(value))
-    const { dateTimeWidgetType } = options
+    const { dateTimeWidgetType, dateTimeAvailableDates } = options
     let dateFormat = false, timeFormat = false, format, viewMode = 'days'
     if (!dateTimeWidgetType || dateTimeWidgetType === 'dateTime') {
       dateFormat = 'DD.MM.YYYY'
@@ -153,7 +159,7 @@ class DateTimeInputWidget extends React.Component {
             step: 5,
           }
         }}
-        isValidDate={isValid}
+        isValidDate={validateDates(dateTimeAvailableDates)}
         onBlur={onBlur && (value => {
           if (/\d/.test(value)) {
             formContext.setDirty(id)
