@@ -229,6 +229,12 @@ export default class Form extends Component {
         acceptCharset={acceptcharset}
         noValidate={noHtml5Validate}
         onSubmit={this.onSubmit}
+        onKeyDown={(event) => {
+          const node = event.target
+          if (event.keyCode == 13 && node.type == 'text') {
+            event.preventDefault()
+          }
+        }}
       >
         {this.renderErrors({ cssPrefix })}
         <_SchemaField
