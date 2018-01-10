@@ -165,9 +165,9 @@ describe("Validation", () => {
         });
 
         it("should render errors", () => {
-          expect(node.querySelectorAll(".errors li"))
+          expect(node.querySelectorAll(".form-widget__errors li"))
             .to.have.length.of(1);
-          expect(node.querySelector(".errors li").textContent)
+          expect(node.querySelector(".form-widget__errors li").textContent)
             .eql("instance requires property \"foo\"");
         });
 
@@ -211,9 +211,9 @@ describe("Validation", () => {
         });
 
         it("should render errors", () => {
-          expect(node.querySelectorAll(".errors li"))
+          expect(node.querySelectorAll(".form-widget__errors li"))
             .to.have.length.of(1);
-          expect(node.querySelector(".errors li").textContent)
+          expect(node.querySelector(".form-widget__errors li").textContent)
             .eql("instance.foo does not meet minimum length of 10");
         });
 
