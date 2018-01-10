@@ -1,4 +1,5 @@
 import React, {PropTypes} from "react";
+import R from 'ramda'
 
 function DescriptionField(props) {
   const {id, description, formContext} = props;
@@ -6,7 +7,7 @@ function DescriptionField(props) {
     // See #312: Ensure compatibility with old versions of React.
     return <div/>;
   }
-  const { cssPrefix } = formContext
+  const cssPrefix = R.propOr('prefix', 'cssPrefix', formContext)
   if (typeof description === "string") {
     return <p id={id} className={`${cssPrefix}__field-description`}>{description}</p>;
   } else {

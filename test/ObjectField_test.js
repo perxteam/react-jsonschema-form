@@ -74,30 +74,30 @@ describe("ObjectField", () => {
     it("should render a default property label", () => {
       const {node} = createFormComponent({schema});
 
-      expect(node.querySelector(".field-boolean label").textContent)
+      expect(node.querySelector(".form-widget__field-boolean label").textContent)
         .eql("bar");
     });
 
     it("should render a string property", () => {
       const {node} = createFormComponent({schema});
 
-      expect(node.querySelectorAll(".field input[type=text]"))
+      expect(node.querySelectorAll(".form-widget__field input[type=text]"))
         .to.have.length.of(1);
     });
 
     it("should render a boolean property", () => {
       const {node} = createFormComponent({schema});
 
-      expect(node.querySelectorAll(".field input[type=checkbox]"))
+      expect(node.querySelectorAll(".form-widget__field input[type=checkbox]"))
         .to.have.length.of(1);
     });
 
     it("should handle a default object value", () => {
       const {node} = createFormComponent({schema});
 
-      expect(node.querySelector(".field input[type=text]").value)
+      expect(node.querySelector(".form-widget__field input[type=text]").value)
         .eql("hey");
-      expect(node.querySelector(".field input[type=checkbox]").checked)
+      expect(node.querySelector(".form-widget__field input[type=checkbox]").checked)
         .eql(true);
     });
 
@@ -107,7 +107,7 @@ describe("ObjectField", () => {
       // Required field is <input type="text" required="">
       expect(node.querySelector("input[type=text]").getAttribute("required"))
         .eql("");
-      expect(node.querySelector(".field-string label").textContent)
+      expect(node.querySelector(".form-widget__field-string label").textContent)
         .eql("Foo*");
     });
 
@@ -117,9 +117,9 @@ describe("ObjectField", () => {
         bar: true,
       }});
 
-      expect(node.querySelector(".field input[type=text]").value)
+      expect(node.querySelector(".form-widget__field input[type=text]").value)
         .eql("hey");
-      expect(node.querySelector(".field input[type=checkbox]").checked)
+      expect(node.querySelector(".form-widget__field input[type=checkbox]").checked)
         .eql(true);
     });
 
@@ -148,8 +148,8 @@ describe("ObjectField", () => {
     it("should render the widget with the expected id", () => {
       const {node} = createFormComponent({schema});
 
-      expect(node.querySelector("input[type=text]").id).eql("root_foo");
-      expect(node.querySelector("input[type=checkbox]").id).eql("root_bar");
+      expect(node.querySelector("input[type=text]").id).eql("foo");
+      expect(node.querySelector("input[type=checkbox]").id).eql("bar");
     });
   });
 
@@ -169,7 +169,7 @@ describe("ObjectField", () => {
         "ui:order": ["baz", "qux", "bar", "foo"]
       }});
       const labels = [].map.call(
-        node.querySelectorAll(".field > label"), l => l.textContent);
+        node.querySelectorAll(".form-widget__field > label"), l => l.textContent);
 
       expect(labels).eql(["baz", "qux", "bar", "foo"]);
     });
@@ -179,7 +179,7 @@ describe("ObjectField", () => {
         "ui:order": ["baz", "*", "foo"]
       }});
       const labels = [].map.call(
-        node.querySelectorAll(".field > label"), l => l.textContent);
+        node.querySelectorAll(".form-widget__field > label"), l => l.textContent);
 
       expect(labels).eql(["baz", "bar", "qux", "foo"]);
     });
@@ -189,7 +189,7 @@ describe("ObjectField", () => {
         "ui:order": ["baz", "qux", "bar", "wut?", "foo", "huh?"]
       }});
 
-      expect(node.querySelector(".config-error").textContent)
+      expect(node.querySelector(".form-widget__config-error").textContent)
         .to.match(/contains extraneous properties 'wut\?', 'huh\?'/);
     });
 
@@ -198,7 +198,7 @@ describe("ObjectField", () => {
         "ui:order": ["baz", "bar"]
       }});
 
-      expect(node.querySelector(".config-error").textContent)
+      expect(node.querySelector(".form-widget__config-error").textContent)
         .to.match(/does not contain properties 'foo', 'qux'/);
     });
 
@@ -207,7 +207,7 @@ describe("ObjectField", () => {
         "ui:order": ["baz", "*", "bar", "*"]
       }});
 
-      expect(node.querySelector(".config-error").textContent)
+      expect(node.querySelector(".form-widget__config-error").textContent)
         .to.match(/contains more than one wildcard/);
     });
 
@@ -227,7 +227,7 @@ describe("ObjectField", () => {
         "ui:order": ["bar", "foo"]
       }});
       const labels = [].map.call(
-        node.querySelectorAll(".field > label"), l => l.textContent);
+        node.querySelectorAll(".form-widget__field > label"), l => l.textContent);
 
       expect(labels).eql(["bar", "foo"]);
     });
@@ -255,7 +255,7 @@ describe("ObjectField", () => {
         }
       }});
       const labels = [].map.call(
-        node.querySelectorAll(".field > label"), l => l.textContent);
+        node.querySelectorAll(".form-widget__field > label"), l => l.textContent);
 
       expect(labels).eql(["bar", "foo"]);
     });
@@ -275,7 +275,7 @@ describe("ObjectField", () => {
 
       const ids = [].map.call(node.querySelectorAll("input[type=text]"),
         (node) => node.id);
-      expect(ids).eql(["root_bar", "root_foo"]);
+      expect(ids).eql(["bar", "foo"]);
     });
   });
 

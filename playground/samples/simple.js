@@ -152,7 +152,10 @@ module.exports = {
       "ui:apiUrl": 'http://127.0.0.1:8080/forms/api/v1/uploads',
     },
     appeal: {
-      "ui:widget": "select"
+      "ui:widget": "select",
+      "ui:options": {
+        placeholder: "Test"
+      }
     },
     button1: {
       "ui:widget": "button",
