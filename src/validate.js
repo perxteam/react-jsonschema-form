@@ -146,16 +146,17 @@ export function validateFormDataOnSubmit(formData, schema, customValidate, trans
 export default function validateFormData(formData, schema, customValidate, transformErrors, context, uiSchema) {
   let needValidateFields = []
   let dirtyFields = []
-  Object.keys(context.formControlState).forEach((key) => {
-    const value = context.formControlState[key]
-//    console.log('key', key, 'value from formData', formData[key], 'value from context', value)
-    if (value === 'dirty') {
-      dirtyFields = dirtyFields.concat(key)
-    }
-    if (value) {
-      needValidateFields = needValidateFields.concat(key)
-    }
-  })
+  if (context) {
+    Object.keys(context.formControlState).forEach((key) => {
+      const value = context.formControlState[key]
+      if (value === 'dirty') {
+        dirtyFields = dirtyFields.concat(key)
+      }
+      if (value) {
+        needValidateFields = needValidateFields.concat(key)
+      }
+    })
+  }
 //  console.log('needValidateFields', needValidateFields)
 
 //  const filteredFormData = {}

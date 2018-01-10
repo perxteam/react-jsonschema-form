@@ -71,7 +71,7 @@ describe("ArrayFieldTemplate", () => {
       });
 
       it("should render text input for each array item", () => {
-        expect(node.querySelectorAll(".custom-array-item .field input[type=text]"))
+        expect(node.querySelectorAll(".custom-array-item .form-widget__field input[type=text]"))
           .to.have.length.of(formData.length);
       });
 
@@ -123,7 +123,7 @@ describe("ArrayFieldTemplate", () => {
       });
 
       it("should render text input for each array item", () => {
-        expect(node.querySelectorAll(".custom-array-item .field input[type=text]"))
+        expect(node.querySelectorAll(".custom-array-item input[type=text]"))
           .to.have.length.of(formData.length);
       });
 

@@ -33,7 +33,7 @@ describe("SchemaField", () => {
         fields
       });
 
-      expect(node.querySelectorAll("#custom > .field input[type=text]"))
+      expect(node.querySelectorAll("#custom > .form-widget__field input[type=text]"))
         .to.have.length.of(1);
     });
   });
@@ -152,7 +152,7 @@ describe("SchemaField", () => {
     it("should render description if available from the schema", () => {
       const {node} = createFormComponent({schema});
 
-      expect(node.querySelectorAll("#root_foo__description"))
+      expect(node.querySelectorAll("#foo__description"))
         .to.have.length.of(1);
     });
 
@@ -173,7 +173,7 @@ describe("SchemaField", () => {
       };
       const {node} = createFormComponent({schema: schemaWithReference});
 
-      const matches = node.querySelectorAll("#root_foo__description");
+      const matches = node.querySelectorAll("#foo__description");
       expect(matches).to.have.length.of(1);
       expect(matches[0].textContent).to.equal("A Foo field");
     });
@@ -181,7 +181,7 @@ describe("SchemaField", () => {
     it("should not render description if not available from schema", () => {
       const {node} = createFormComponent({schema});
 
-      expect(node.querySelectorAll("#root_bar__description"))
+      expect(node.querySelectorAll("#bar__description"))
         .to.have.length.of(0);
     });
 
@@ -230,7 +230,7 @@ describe("SchemaField", () => {
       const {node} = createFormComponent({schema, uiSchema, validate});
       submit(node);
 
-      const matches = node.querySelectorAll("form > .form-group > div > .error-detail .text-danger");
+      const matches = node.querySelectorAll("form > .form-widget__form-group > div > .form-widget__error-detail .form-widget__text-danger");
       expect(matches).to.have.length.of(1);
       expect(matches[0].textContent).to.eql("container");
     });
@@ -239,7 +239,7 @@ describe("SchemaField", () => {
       const {node} = createFormComponent({schema, uiSchema, validate});
       submit(node);
 
-      const matches = node.querySelectorAll("form .form-group .form-group .text-danger");
+      const matches = node.querySelectorAll("form .form-widget__form-group .form-widget__form-group .form-widget__text-danger");
       expect(matches).to.have.length.of(1);
       expect(matches[0].textContent).to.contain("test");
     });

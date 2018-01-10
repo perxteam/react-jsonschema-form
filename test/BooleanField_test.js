@@ -23,7 +23,7 @@ describe("BooleanField", () => {
       type: "boolean"
     }});
 
-    expect(node.querySelectorAll(".field input[type=checkbox]"))
+    expect(node.querySelectorAll(".form-widget__field input[type=checkbox]"))
       .to.have.length.of(1);
   });
 
@@ -33,7 +33,7 @@ describe("BooleanField", () => {
       title: "foo"
     }});
 
-    expect(node.querySelector(".field label span").textContent)
+    expect(node.querySelector(".form-widget__field label span").textContent)
       .eql("foo");
   });
 
@@ -43,7 +43,7 @@ describe("BooleanField", () => {
       title: "foo"
     }});
 
-    expect(node.querySelectorAll(".field label"))
+    expect(node.querySelectorAll(".form-widget__field label"))
       .to.have.length.of(1);
   });
 
@@ -53,7 +53,7 @@ describe("BooleanField", () => {
       default: true,
     }});
 
-    expect(node.querySelector(".field input").checked)
+    expect(node.querySelector(".form-widget__field input").checked)
       .eql(true);
   });
 
@@ -81,7 +81,7 @@ describe("BooleanField", () => {
       type: "boolean",
     }, formData: true});
 
-    expect(node.querySelector(".field input").checked)
+    expect(node.querySelector(".form-widget__field input").checked)
       .eql(true);
   });
 
@@ -91,7 +91,7 @@ describe("BooleanField", () => {
       enumNames: ["Yes", "No"],
     }, formData: true, uiSchema: {"ui:widget": "radio"}});
 
-    const labels = [].map.call(node.querySelectorAll(".field-radio-group label"),
+    const labels = [].map.call(node.querySelectorAll(".form-widget__field-radio-group label"),
                                label => label.textContent);
     expect(labels).eql(["Yes", "No"]);
   });
@@ -108,7 +108,7 @@ describe("BooleanField", () => {
       }
     });
 
-    expect(node.querySelectorAll(".radio-inline"))
+    expect(node.querySelectorAll(".form-widget__radio-inline"))
       .to.have.length.of(2);
   });
 
@@ -116,11 +116,11 @@ describe("BooleanField", () => {
     const {node} = createFormComponent({schema: {
       type: "boolean",
       enumNames: ["Yes", "No"],
-    }, formData: true, uiSchema: {"ui:widget": "select"}});
+    }, uiSchema: {"ui:widget": "select"}});
 
-    const labels = [].map.call(node.querySelectorAll(".field option"),
+    const labels = [].map.call(node.querySelectorAll(".form-widget__field option"),
                                label => label.textContent);
-    expect(labels).eql(["", "Yes", "No"]);
+    expect(labels).eql(["Yes", "No"]);
   });
 
   it("should render the widget with the expected id", () => {
