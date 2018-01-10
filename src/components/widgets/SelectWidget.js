@@ -1,5 +1,6 @@
 import React, {PropTypes} from "react";
-
+import Select2 from 'react-select2-wrapper';
+import 'react-select2-wrapper/css/select2.css'
 import {asNumber} from "../../utils";
 
 /**
@@ -73,32 +74,26 @@ function SelectWidget({
 
   const { cssPrefix } = formContext
   return (
-    <select
-      id={id}
-      multiple={multiple}
-      placeholder={placeholder}
+    <Select2
+      data={enumOptions.map(({value: id, label: text}) => ({ id, text }))}
       className={`${cssPrefix}__form-control`}
-      value={typeof value === "undefined" ? emptyValue : value}
-      required={required}
-      disabled={disabled}
-      readOnly={readonly}
-      autoFocus={autofocus}
-      onBlur={onBlur && (event => {
-        const newValue = getValue(event, multiple);
-        onBlur(id, processValue(schema, newValue));
-      })}
-      onFocus={() => formContext.setTouched(id)}
+      id={id}
+      options={{
+        placeholder,
+        disabled,
+        width: 'style',
+        minimumResultsForSearch: Infinity,
+      }}
       onChange={(event) => {
+        const id = event.target.value
         formContext.setDirty(id)
         formContext.setTouched(id)
         const newValue = getValue(event, multiple);
         onChange(processValue(schema, newValue));
-      }}>
-      {!multiple && !schema.default && <option value="">{placeholder}</option>}
-      {enumOptions.map(({value, label}, i) => {
-        return <option key={i} value={value}>{label}</option>;
-      })}
-    </select>
+      }}
+      value={typeof value === "undefined" ? emptyValue : value}
+    />
+
   );
 }
 

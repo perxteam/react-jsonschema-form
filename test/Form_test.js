@@ -391,7 +391,7 @@ describe("Form", () => {
       const {node} = createFormComponent({schema});
 
       expect(node.querySelectorAll("option"))
-        .to.have.length.of(3);
+        .to.have.length.of(2);
     });
   });
 
@@ -1183,7 +1183,7 @@ describe("Form", () => {
         formData: {foo: "foo", baz: "bar"},
       });
 
-      Simulate.change(node.querySelector("#root_baz"), {
+      Simulate.change(node.querySelector("#baz"), {
         target: {value: "baz"}
       });
 
@@ -1217,7 +1217,7 @@ describe("Form", () => {
     });
 
     it("should set attr class of form", () => {
-      expect(node.getAttribute("class")).eql(formProps.className);
+      expect(node.getAttribute("class")).eql('form-widget__' + formProps.className);
     });
 
     it("should set attr name of form", () => {

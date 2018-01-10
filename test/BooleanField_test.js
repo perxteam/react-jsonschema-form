@@ -116,11 +116,11 @@ describe("BooleanField", () => {
     const {node} = createFormComponent({schema: {
       type: "boolean",
       enumNames: ["Yes", "No"],
-    }, formData: true, uiSchema: {"ui:widget": "select"}});
+    }, uiSchema: {"ui:widget": "select"}});
 
     const labels = [].map.call(node.querySelectorAll(".form-widget__field option"),
                                label => label.textContent);
-    expect(labels).eql(["", "Yes", "No"]);
+    expect(labels).eql(["Yes", "No"]);
   });
 
   it("should render the widget with the expected id", () => {

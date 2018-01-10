@@ -61,7 +61,7 @@ export default class Form extends Component {
     const {definitions} = schema;
     const formData = getDefaultFormState(schema, props.formData, definitions);
     const {errors, errorSchema} = mustValidate ?
-      this.validate(formData, schema) : {
+      this.validate(formData, schema, uiSchema) : {
         errors: state.errors || [],
         errorSchema: state.errorSchema || {}
       };
@@ -83,9 +83,15 @@ export default class Form extends Component {
     return shouldRender(this, nextProps, nextState);
   }
 
-  validate(formData, schema) {
+  validate(formData, schema, uiSchema) {
     const {validate, transformErrors} = this.props;
-    return validateFormData(formData, schema || this.props.schema, validate, transformErrors, initialContext );
+    return validateFormData(formData,
+      schema || this.props.schema,
+      validate,
+      transformErrors,
+      initialContext,
+      uiSchema || this.props.uiSchema,
+    );
   }
 
   resetForm = () => {
@@ -223,6 +229,12 @@ export default class Form extends Component {
         acceptCharset={acceptcharset}
         noValidate={noHtml5Validate}
         onSubmit={this.onSubmit}
+        onKeyDown={(event) => {
+          const node = event.target
+          if (event.keyCode == 13 && node.type == 'text') {
+            event.preventDefault()
+          }
+        }}
       >
         {this.renderErrors({ cssPrefix })}
         <_SchemaField

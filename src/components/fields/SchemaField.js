@@ -38,9 +38,13 @@ function Label(props) {
     return <div/>;
   }
   return (
-    <label className={`${cssPrefix}__control-label`} htmlFor={id}>
-      {required ? label + REQUIRED_FIELD_SYMBOL : label}
-    </label>
+    <label
+      className={`${cssPrefix}__control-label`}
+      htmlFor={id}
+      dangerouslySetInnerHTML={{
+        __html: required ? label + REQUIRED_FIELD_SYMBOL : label,
+      }}
+    />
   );
 }
 
