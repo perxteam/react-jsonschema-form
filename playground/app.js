@@ -371,6 +371,7 @@ class App extends Component {
               formContext={{
                 preview: false,
                 cssPrefix: "form-service-widget",
+                formId: "Current form Id",
               }}
               validateOnBlur={true}
               showErrorList={false}
