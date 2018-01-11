@@ -45,7 +45,7 @@
     "react-input-mask": "^0.7.5",
     "react-select2-wrapper": "1.0.3",
     "select2": "4.0.3",
-    "react-uploader": "https://github.com/perxteam/react-uploader.git#90d9696",
+    "react-uploader": "https://github.com/perxteam/react-uploader.git#f2deb5a",
     "setimmediate": "^1.0.5"
   },
   "devDependencies": {
