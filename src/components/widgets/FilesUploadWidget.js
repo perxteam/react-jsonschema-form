@@ -20,6 +20,9 @@ class FileUploadWidget extends Component {
       formContext: { cssPrefix, formId },
     } = this.props
 
+    const miscFormData = formId
+      ? { 'form_id': formId }
+      : undefined
     return (
       <div>
         <Uploader
@@ -27,9 +30,7 @@ class FileUploadWidget extends Component {
           cssPrefix={cssPrefix}
           actualDelete={false}
           value={value}
-          miscFormData={{
-            'form_id': formId,
-          }}
+          miscFormData={miscFormData}
           {...options}
         />
       </div>
