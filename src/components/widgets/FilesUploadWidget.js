@@ -13,8 +13,8 @@ class FileUploadWidget extends Component {
   }
 
   errorProcessor = ({ key, args }) => {
-    const { formContext: { i18nInstance } } = this.props
-    return i18nInstance.t(`validation:widget.${key}`, args)
+    const { formContext: { i18nInstance, i18nPath } } = this.props
+    return i18nInstance.t(i18nPath ? `${i18nPath}.${key}` : key, args)
   }
 
   render() {
