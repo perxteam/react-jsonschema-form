@@ -12,6 +12,15 @@ class FileUploadWidget extends Component {
     )(value))
   }
 
+  errorProcessor = ({ key, args }) => {
+    const {
+      formContext: { i18nInstance },
+    } = this.props
+    console.log('errorProcessor', key, 'args', args)
+    console.log('i18nInstance', i18nInstance)
+    return 'aaaaaa'
+  }
+
   render() {
     const {
       id,
@@ -31,6 +40,7 @@ class FileUploadWidget extends Component {
           actualDelete={false}
           value={value}
           miscFormData={miscFormData}
+          errorProcessor={this.errorProcessor}
           {...options}
         />
       </div>
