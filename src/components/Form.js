@@ -160,6 +160,7 @@ export default class Form extends Component {
 
       const {errors, errorSchema} = this.validate(this.state.formData);
       if (Object.keys(errors).length > 0) {
+        console.log('errors', errors, 'errorSchema', errorSchema)
         setState(this, {errors, errorSchema}, () => {
           if (this.props.onError) {
             this.props.onError(errors);
@@ -171,8 +172,23 @@ export default class Form extends Component {
       }
     }
 
+//    const {errors, errorSchema} = this.validate(this.state.formData);
+//    console.log('errorSchema before submission:', errorSchema, 'errors', )
     if (this.props.onSubmit) {
-      this.props.onSubmit(this.state);
+      this.props.onSubmit(this.state)
+        .then((data) => {
+          console.log('form submitted:', data)
+        })
+        .catch((errors) => {
+          console.log('form submission failed:', errors)
+          setState(this, {errorSchema: errors}, () => {
+//            if (this.props.onError) {
+//              this.props.onError(errors);
+//            } else {
+//              console.error("Form validation failed", errors);
+//            }
+          });
+        })
     }
     this.setState({status: "initial", errors: [], errorSchema: {}});
   };

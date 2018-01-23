@@ -310,6 +310,14 @@ class App extends Component {
 
   onFormDataChange = ({formData}) => this.setState({formData});
 
+  submit = (data) => {
+    console.log('submitting data:', data)
+    return Promise.reject({
+      firstName: { __errors: ['Ошибка от сервера', 'Всем хана']},
+      lastName: { __errors: ['Вы там совсем что-ли?']},
+    })
+  }
+
   render() {
     const {
       schema,
@@ -368,6 +376,7 @@ class App extends Component {
               validate={validate}
               transformErrors={transformErrors}
               noHtml5Validate
+              onSubmit={this.submit}
               formContext={{
                 preview: false,
                 cssPrefix: "form-service-widget",
