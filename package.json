@@ -33,7 +33,7 @@
     "react": "^15.0.0"
   },
   "dependencies": {
-    "@oledm/react-telephone-input": "^4.0.10",
+    "@oledm/react-telephone-input": "^4.0.11",
     "country-telephone-data": "^0.4.2",
     "isomorphic-fetch": "^2.2.1",
     "jquery": "^3.2.1",
