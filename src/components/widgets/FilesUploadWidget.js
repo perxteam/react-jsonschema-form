@@ -12,21 +12,31 @@ class FileUploadWidget extends Component {
     )(value))
   }
 
+  errorProcessor = ({ key, args }) => {
+    const { formContext: { i18nInstance, i18nPath } } = this.props
+    return i18nInstance.t(i18nPath ? `${i18nPath}${key}` : key, args)
+  }
+
   render() {
     const {
       id,
       value,
       options,
-      formContext: { cssPrefix },
+      formContext: { cssPrefix, formId, i18nInstance },
     } = this.props
 
+    const miscFormData = formId
+      ? { 'form_id': formId }
+      : undefined
     return (
       <div>
         <Uploader
           onChange={this.handleChange}
+          value={value}
           cssPrefix={cssPrefix}
           actualDelete={false}
-          value={value}
+          miscFormData={miscFormData}
+          errorProcessor={i18nInstance && this.errorProcessor}
           {...options}
         />
       </div>

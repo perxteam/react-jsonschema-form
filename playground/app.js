@@ -364,6 +364,7 @@ class App extends Component {
               uiSchema={uiSchema}
               formData={formData}
               onChange={this.onFormDataChange}
+              onSubmit={({formData}) => console.log("submitted formData", formData)}
               fields={{geo: GeoPosition}}
               validate={validate}
               transformErrors={transformErrors}
@@ -371,6 +372,7 @@ class App extends Component {
               formContext={{
                 preview: false,
                 cssPrefix: "form-service-widget",
+                formId: "Current form Id",
               }}
               validateOnBlur={true}
               showErrorList={false}

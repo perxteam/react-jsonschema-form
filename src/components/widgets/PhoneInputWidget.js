@@ -51,6 +51,7 @@ class PhoneInputWidget extends React.Component {
         onlyCountries={options.onlyCountries}
         onBlur={onBlur && (value => onBlur(id, event))}
         onFocus={() => formContext.setTouched(id)}
+        placeholder={placeholder}
         onChange={this.onChange}
       />
     )

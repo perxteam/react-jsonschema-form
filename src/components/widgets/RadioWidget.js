@@ -53,6 +53,7 @@ function RadioWidget({
             <input type="radio"
               checked={checked}
               name={name}
+              required={required}
               value={option.value}
               disabled={disabled}
               autoFocus={autofocus && i === 0}

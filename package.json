@@ -1,6 +1,6 @@
 {
   "name": "react-jsonschema-form",
-  "version": "0.42.0",
+  "version": "0.43.0",
   "description": "A simple React component capable of building HTML forms out of a JSON schema.",
   "scripts": {
     "build:readme": "toctoc README.md -w",
@@ -34,7 +34,7 @@
     "react": "^15.0.0"
   },
   "dependencies": {
-    "@oledm/react-telephone-input": "^4.0.10",
+    "@oledm/react-telephone-input": "^4.0.11",
     "country-telephone-data": "^0.4.2",
     "isomorphic-fetch": "^2.2.1",
     "jquery": "^3.2.1",
@@ -45,8 +45,8 @@
     "react-datetime": "2.11.1",
     "react-input-mask": "^0.7.5",
     "react-select2-wrapper": "1.0.4-beta6",
+    "react-uploader": "https://github.com/perxteam/react-uploader.git#19820c8",
     "select2": "4.0.3",
-    "react-uploader": "https://github.com/perxteam/react-uploader.git#90d9696",
     "setimmediate": "^1.0.5"
   },
   "devDependencies": {
