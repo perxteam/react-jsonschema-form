@@ -1,4 +1,5 @@
 import React, {PropTypes} from "react";
+import R from 'ramda'
 import Select2 from 'react-select2-wrapper';
 import 'react-select2-wrapper/css/select2.css'
 import {asNumber} from "../../utils";
@@ -30,6 +31,15 @@ function getValue(event, multiple) {
   }
 }
 
+const getEnumOptions = R.compose(
+  R.ifElse(
+    R.is(Array),
+    R.identity,
+    R.always([])
+  ),
+  R.prop('enumOptions')
+)
+
 function SelectWidget({
   schema,
   id,
@@ -45,7 +55,8 @@ function SelectWidget({
   placeholder,
   formContext,
 }) {
-  const {enumOptions} = options;
+  const enumOptions = getEnumOptions(options)
+//  console.log('enumOptions', enumOptions)
   const emptyValue = multiple ? [] : "";
   if (formContext && formContext.preview) {
     const { Select } = formContext
@@ -89,6 +100,7 @@ function SelectWidget({
         formContext.setDirty(id)
         formContext.setTouched(id)
         const newValue = getValue(event, multiple);
+//        console.log('change event', newValue)
         onChange(processValue(schema, newValue));
       }}
       value={typeof value === "undefined" ? emptyValue : value}
@@ -106,7 +118,7 @@ if (process.env.NODE_ENV !== "production") {
     schema: PropTypes.object.isRequired,
     id: PropTypes.string.isRequired,
     options: PropTypes.shape({
-      enumOptions: PropTypes.array,
+      enumOptions: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
     }).isRequired,
     value: PropTypes.any,
     required: PropTypes.bool,

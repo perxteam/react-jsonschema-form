@@ -45,16 +45,16 @@ module.exports = {
         title: "Phone number",
       },
       appeal: {
+        "type": "string",
+        "title": "Обращение",
         "enum": [
           "Mr",
           "Mrs"
         ],
-        "type": "string",
         "enumNames": [
           "Уважаемый",
           "Уважаемая"
         ],
-        "title": "Обращение"
       },
       images: {
         type: "array",

@@ -273,7 +273,7 @@ class ArrayField extends Component {
     } = this.props;
     const {title, format} = schema;
     const {widgets, formContext} = registry;
-    const enumOptions = Array.isArray(schema.enum) && optionsList(schema);
+    const enumOptions = Array.isArray(schema.enum) ? optionsList(schema) : [];
     const defaultWidget = format || (enumOptions ? "select" : "text");
     const {widget=defaultWidget, placeholder="", ...options} = getUiOptions(uiSchema);
     const Widget = getWidget(schema, widget, widgets);
