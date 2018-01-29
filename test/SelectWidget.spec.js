@@ -1,4 +1,5 @@
 import React from 'react'
+import R from 'ramda'
 import { assert } from 'chai'
 import { spy } from 'sinon'
 import { mount, shallow, configure } from 'enzyme'
@@ -23,52 +24,49 @@ const schema = {
     foo: {
       "type": "string",
       "title": "Обращение",
-      "enum": [ "Mr", "Mrs" ],
-      "enumNames": [ "Уважаемый", "Уважаемая" ],
+      "enum": [ "one", "two", "three" ],
+      "enumNames": [ "Уважаемый", "Уважаемая", "Уважаемые" ],
     },
   }
 }
+
 const uiSchema = {
   foo: {
     "ui:widget": "select",
+      "ui:options": {
+        placeholder: "Test"
+      }
   },
 }
 
 describe('Testing component "Select"', function () {
-  it('should return null when no tree-data provided', function () {
-//    const wrapper = createFormComponent({ schema, uiSchema })
-    assert.equal(true, true)
-
-
-//    console.log('wrapper 1', wrapper.debug())
-//    console.log('select2', wrapper.find('Select2'))
-//    const $select = $(wrapper.find('Select2 select').getDOMNode());
-//    console.log('select', $select)
-//    $select.select2('open');
-
-//    console.log('state', wrapper.state().formData)
-//    wrapper.find('select').simulate('change', { target: { value: 'Mrs'}});
-//    wrapper.find('Select2').props().onChange('aa')
-
-//    console.log('props', wrapper.find('Select2').props())
-//    console.log('state', wrapper.state().formData)
-//    console.log('new value:', wrapper.find('select').props())
-
-
-
-//    const event = new Event()
-//    wrapper.find('Select2').props().onChange(event)
-
-
-
-
-
-//    wrapper.find('Select2').dive()
-//    wrapper.find('Select2').simulate('click')
-//    console.log('wrapper 2', wrapper.debug())
-//    console.log('wrapper 2', wrapper.html())
-//    console.log('select', wrapper.find('.select2-container'))
-//    assert.equal(wrapper.type(), null)
+  it('should provide no options when no enumNames provided', function () {
+    const schemaWithoutEnums = R.compose(
+      R.dissocPath(['properties', 'foo', 'enum']),
+      R.dissocPath(['properties', 'foo', 'enumNames']),
+    )(schema)
+    const wrapper = createFormComponent({ schema: schemaWithoutEnums, uiSchema })
+    assert.equal(wrapper.find('select option').length, 0)
   })
 
+  it('should provide options according to enumNames', function () {
+    const wrapper = createFormComponent({ schema, uiSchema })
+    assert.equal(wrapper.find('select option').length, 3)
+  })
+
+  it('should not change initial state after mount', function () {
+    const wrapper = createFormComponent({ schema, uiSchema })
+    assert.equal(wrapper.state().formData.foo, undefined)
+  })
+
+  it('should handle change selection', function () {
+    const wrapper = createFormComponent({ schema, uiSchema })
+    wrapper.find('Select2').props().onChange({ target: { value: 'two'}})
+    assert.equal(wrapper.state().formData.foo, 'two')
+  })
+
+  it('should pass placeholder property down to Select2', function () {
+    const wrapper = createFormComponent({ schema, uiSchema })
+    assert.equal(wrapper.find('Select2').prop('options').placeholder, 'Test')
+  })
 })
