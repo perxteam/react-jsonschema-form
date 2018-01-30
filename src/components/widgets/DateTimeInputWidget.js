@@ -4,13 +4,7 @@ import InputElement from 'react-input-mask'
 import moment from 'moment'
 import 'moment/locale/ru'
 import 'react-datetime/css/react-datetime.css'
-
-export const formatDateCustom = (format) => (date) => {
-  if (!moment(date, format, true).isValid()) return date
-  return date
-    ? moment(new Date(date)).format(format)
-    : undefined
-}
+import { formatDateCustom } from '../../utils'
 
 export const formatDate = formatDateCustom('DD.MM.YYYY HH:mm')
 
@@ -39,6 +33,7 @@ class DateTimeInputWidget extends React.Component {
       formContext,
     } = this.props;
 
+    console.log('renderInput value:', value)
     const [date = '', time = ''] = value ? value.split(' ') : []
     const [day = '', month = '', year = ''] = date ? date.split('.') : []
     let D
@@ -86,7 +81,10 @@ class DateTimeInputWidget extends React.Component {
           ? 'ant-input ant-input-lg'
           : `${cssPrefix}__form-control`
         }
-        onChange={event => onChange(event.target.value)}
+        onChange={event => {
+          console.log('input change', event.target.value)
+          onChange(event.target.value)
+        }}
         onBlur={onBlur && (({ target: { value } }) => {
           if (/\d/.test(value)) {
             formContext.setDirty(id)
@@ -95,7 +93,10 @@ class DateTimeInputWidget extends React.Component {
             onChange(undefined)
           }
         })}
-        onFocus={() => formContext.setTouched(id)}
+        onFocus={(a) => {
+//          console.log('focus on input', a)
+          formContext.setTouched(id)
+        }}
         onClick={openCalendar}
         value={value || ''}
         formatChars={{
@@ -128,7 +129,7 @@ class DateTimeInputWidget extends React.Component {
       ...inputProps
     } = this.props;
 
-  //  console.log('value', value , 'is date valid:', moment(value, dateTimeFormat, true).isValid(), 'js format', new Date(value))
+    //  console.log('value', value , 'is date valid:', moment(value, dateTimeFormat, true).isValid(), 'js format', new Date(value))
     const { dateTimeWidgetType, dateTimeAvailableDates } = options
     let dateFormat = false, timeFormat = false, format, viewMode = 'days'
     if (!dateTimeWidgetType || dateTimeWidgetType === 'dateTime') {
@@ -161,6 +162,7 @@ class DateTimeInputWidget extends React.Component {
         }}
         isValidDate={validateDates(dateTimeAvailableDates)}
         onBlur={onBlur && (value => {
+          console.log('blur!')
           if (/\d/.test(value)) {
             formContext.setDirty(id)
             onChange(formatDateCustom(format)(value))
@@ -168,9 +170,15 @@ class DateTimeInputWidget extends React.Component {
             onChange(undefined)
           }
         })}
-        onChange={(value) => onChange(formatDateCustom(format)(value))}
+        onChange={(value) => {
+          console.log('change:', value)
+          onChange(formatDateCustom(format)(value))
+        }}
         renderInput={this.renderInput}
-        onFocus={() => formContext.setTouched(id)}
+        onFocus={() => {
+          console.log('focused!')
+          formContext.setTouched(id)
+        }}
       />
     )
   }

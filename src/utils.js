@@ -1,4 +1,5 @@
 import React from "react";
+import moment from 'moment'
 import "setimmediate";
 
 
@@ -525,3 +526,12 @@ export function rangeSpec(schema) {
 }
 
 export function noop() {}
+
+export function formatDateCustom(format) {
+  return function(date) {
+    if (!moment(date, format, true).isValid()) return date
+    return date
+      ? moment(new Date(date)).format(format)
+      : undefined
+  }
+}
