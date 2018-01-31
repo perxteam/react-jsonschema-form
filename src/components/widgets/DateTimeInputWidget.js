@@ -45,6 +45,7 @@ class DateTimeInputWidget extends React.Component {
     } else {
       D = '[0-9]'
     }
+//    console.log('D', D)
 
     let M
     if (month.startsWith('1')) {
@@ -71,6 +72,7 @@ class DateTimeInputWidget extends React.Component {
       format = 'HH:mm'
     }
 
+//    console.log('mask', mask)
     const { cssPrefix } = formContext
 //    console.log('input value:', value)
     return (
