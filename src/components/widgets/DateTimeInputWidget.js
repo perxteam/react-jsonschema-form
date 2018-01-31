@@ -33,7 +33,7 @@ class DateTimeInputWidget extends React.Component {
       formContext,
     } = this.props;
 
-    console.log('renderInput value:', value)
+//    console.log('renderInput value:', value)
     const [date = '', time = ''] = value ? value.split(' ') : []
     const [day = '', month = '', year = ''] = date ? date.split('.') : []
     let D
@@ -145,7 +145,6 @@ class DateTimeInputWidget extends React.Component {
       viewMode = 'time'
     }
     const { cssPrefix } = formContext
-
     return (
       <Datetime
         locale="ru"

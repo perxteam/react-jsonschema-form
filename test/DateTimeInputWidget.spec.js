@@ -6,6 +6,7 @@ import { mount, shallow, configure } from 'enzyme'
 import Form from "../src";
 import moment from 'moment'
 import Adapter from 'enzyme-adapter-react-15';
+import simulant from 'simulant'
 import { formatDateCustom } from '../src/utils'
 
 configure({ adapter: new Adapter() });
@@ -36,6 +37,37 @@ const uiSchema = {
   },
 }
 
+const defaultFormat = 'DD.MM.YYYY HH:mm'
+
+const utils = {
+  mouseUp() {
+    const event = simulant('mouseup')
+    const target = document.body
+    simulant.fire( target, event )
+  },
+  focus(component) {
+    component.find('DateTimeInputWidget').find('InputElement').simulate('focus')
+  },
+  selectDay(component, day) {
+    component.find('.rdtDay').not('.rdtOld').at(day - 1).simulate('click')
+  },
+  toggleTimeView(component) {
+    component.find('.rdtTimeToggle').simulate('click')
+  },
+  increaseHour(component) {
+    component.find('.rdtCounter .rdtBtn').at(0).simulate('mouseDown')
+  },
+  decreaseHour(component) {
+    component.find('.rdtCounter .rdtBtn').at(1).simulate('mouseDown')
+  },
+  increaseMinute(component) {
+    component.find('.rdtCounter .rdtBtn').at(2).simulate('mouseDown')
+  },
+  decreaseMinute(component) {
+    component.find('.rdtCounter .rdtBtn').at(3).simulate('mouseDown')
+  },
+}
+
 describe('Testing component "DateTimeInput"', function () {
   it('should have default placeholder in format: "ДД.ММ.ГГГГ чч:мм"', function () {
     const wrapper = createFormComponent({ schema, uiSchema })
@@ -55,40 +87,42 @@ describe('Testing component "DateTimeInput"', function () {
 
   it('should change state with masked string after calendar opened', function () {
     const wrapper = createFormComponent({ schema, uiSchema })
-    wrapper.find('DateTimeInputWidget').find('InputElement').simulate('focus')
+    utils.focus(wrapper)
     assert.equal(wrapper.state().formData.foo, '__.__.____ __:__')
   })
 
-  it('should fill state with correct datetime string', function () {
+  it('should set state to datetime string when select calendar day', function () {
     const wrapper = createFormComponent({ schema, uiSchema })
-    wrapper.find('DateTimeInputWidget').find('InputElement').simulate('focus')
-    wrapper.find('.rdtDay').not('.rdtOld').at(0).simulate('click')
-    const defaultFormat = 'DD.MM.YYYY HH:mm'
+    utils.selectDay(wrapper, 1)
     const firstDayOfCurrentMonth = moment().date(1).hour(0).minute(0).format(defaultFormat)
     assert.equal(wrapper.state().formData.foo, firstDayOfCurrentMonth)
   })
 
-  it('should change time with 5 minutes step', function () {
+  it('should set time in state according to TimeView controls', function () {
     const wrapper = createFormComponent({ schema, uiSchema })
-    wrapper.find('DateTimeInputWidget').find('InputElement').simulate('focus')
-    wrapper.find('.rdtDay').not('.rdtOld').at(0).simulate('click')
-    wrapper.find('.rdtTimeToggle').simulate('click')
+    utils.focus(wrapper)
+    utils.selectDay(wrapper, 1)
+    utils.toggleTimeView(wrapper)
 
-    console.log('is timeview', wrapper.find('.rdtPicker .rdtTime').length)
-    wrapper.find('.rdtCounter .rdtBtn').at(0).simulate('mouseDown')
-    wrapper.find('.rdtCounter .rdtBtn').at(1).simulate('mouseDown')
-    wrapper.find('.rdtCounter .rdtBtn').at(2).simulate('mouseDown')
-    wrapper.find('.rdtCounter .rdtBtn').at(3).simulate('mouseDown')
-//    console.log('counters', wrapper.find('.rdtCounter .rdtBtn').at(0).debug())
-//    console.log('counters', wrapper.find('DateTimeInputWidget').find('.rdtCount').at(1).text())
-//    console.log('counters', wrapper.find('.rdtCounter').at(0).find('.rdtBtn').at(0).props('onMouseDown'))
-//    wrapper.find('.rdtCounter').at(0).find('.rdtBtn').at(0).props('onMouseDown')
+    // Set time to 2 hours 10 minutes (minutes step set to 5 in DateTimeInputWidget.js)
+    // Toggle "up" contorls
+    utils.increaseHour(wrapper)
+    utils.increaseHour(wrapper)
+    utils.increaseHour(wrapper)
+    utils.mouseUp()
+    utils.increaseMinute(wrapper)
+    utils.increaseMinute(wrapper)
+    utils.increaseMinute(wrapper)
+    utils.increaseMinute(wrapper)
+    utils.mouseUp()
+    // Toggle "down" contorls
+    utils.decreaseHour(wrapper)
+    utils.mouseUp()
+    utils.decreaseMinute(wrapper)
+    utils.decreaseMinute(wrapper)
+    utils.mouseUp()
 
-//    const defaultFormat = 'DD.MM.YYYY HH:mm'
-//    const firstDayOfCurrentMonth = moment().date(1).hour(0).minute(0).format(defaultFormat)
-
-    console.log('state', wrapper.state().formData.foo)
-//    assert.equal(wrapper.state().formData.foo, firstDayOfCurrentMonth)
+    const firstDayOfCurrentMonth = moment().date(1).hour(2).minute(10).format(defaultFormat)
+    assert.equal(wrapper.state().formData.foo, firstDayOfCurrentMonth)
   })
-
 })
