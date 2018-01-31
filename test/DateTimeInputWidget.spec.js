@@ -7,16 +7,22 @@ import Form from "../src";
 import moment from 'moment'
 import Adapter from 'enzyme-adapter-react-15';
 import simulant from 'simulant'
+import ReactTestUtils from 'react-dom/test-utils'
 import { formatDateCustom } from '../src/utils'
 
 configure({ adapter: new Adapter() });
 
-function createFormComponent(props) {
+function createFormComponent(props, node) {
+  const options = {}
+  if (node) {
+    options.attachTo = node
+  }
   return mount(
     <Form
       {...props}
       safeRenderCompletion={true}
-    />
+    />,
+    Object.keys(options).length ? options : undefined
   )
 }
 
@@ -66,6 +72,10 @@ const utils = {
   decreaseMinute(component) {
     component.find('.rdtCounter .rdtBtn').at(3).simulate('mouseDown')
   },
+  manualInput(component, value) {
+    const target = component.find('DateTimeInputWidget InputElement input').getDOMNode()
+    ReactTestUtils.Simulate.keyPress(target, { key: value })
+  },
 }
 
 describe('Testing component "DateTimeInput"', function () {
@@ -91,7 +101,7 @@ describe('Testing component "DateTimeInput"', function () {
     assert.equal(wrapper.state().formData.foo, '__.__.____ __:__')
   })
 
-  it('should set state to datetime string when select calendar day', function () {
+  it('should set state to datetime string when calendar day select', function () {
     const wrapper = createFormComponent({ schema, uiSchema })
     utils.selectDay(wrapper, 1)
     const firstDayOfCurrentMonth = moment().date(1).hour(0).minute(0).format(defaultFormat)
@@ -124,5 +134,12 @@ describe('Testing component "DateTimeInput"', function () {
 
     const firstDayOfCurrentMonth = moment().date(1).hour(2).minute(10).format(defaultFormat)
     assert.equal(wrapper.state().formData.foo, firstDayOfCurrentMonth)
+  })
+
+  it('should afford to set datetime by manual input', function () {
+    const wrapper = createFormComponent({ schema, uiSchema })
+    utils.focus(wrapper)
+    utils.manualInput(wrapper, '221120121123')
+    assert.equal(wrapper.state().formData.foo, '22.11.2012 11:23')
   })
 })

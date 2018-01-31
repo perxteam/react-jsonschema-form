@@ -72,6 +72,7 @@ class DateTimeInputWidget extends React.Component {
     }
 
     const { cssPrefix } = formContext
+//    console.log('input value:', value)
     return (
       <InputElement
         mask={mask}
@@ -82,7 +83,6 @@ class DateTimeInputWidget extends React.Component {
           : `${cssPrefix}__form-control`
         }
         onChange={event => {
-          console.log('input change', event.target.value)
           onChange(event.target.value)
         }}
         onBlur={onBlur && (({ target: { value } }) => {
@@ -170,7 +170,7 @@ class DateTimeInputWidget extends React.Component {
           }
         })}
         onChange={(value) => {
-          console.log('change:', value)
+//          console.log('change datepicker:', value)
           onChange(formatDateCustom(format)(value))
         }}
         renderInput={this.renderInput}
