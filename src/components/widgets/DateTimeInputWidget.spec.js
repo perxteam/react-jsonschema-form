@@ -3,12 +3,12 @@ import R from 'ramda'
 import { assert } from 'chai'
 import { spy } from 'sinon'
 import { mount, shallow, configure } from 'enzyme'
-import Form from "../src";
 import moment from 'moment'
-import Adapter from 'enzyme-adapter-react-15';
+import Adapter from 'enzyme-adapter-react-15'
 import simulant from 'simulant'
 import TestUtils from 'react-dom/test-utils'
-import { formatDateCustom } from '../src/utils'
+import Form from 'components/Form'
+import { formatDateCustom } from 'utils'
 
 configure({ adapter: new Adapter() });
 

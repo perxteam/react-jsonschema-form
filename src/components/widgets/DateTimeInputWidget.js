@@ -31,7 +31,6 @@ class DateTimeInputWidget extends React.Component {
       formContext,
     } = this.props;
 
-//    console.log('renderInput value:', value)
     const [date = '', time = ''] = value ? value.split(' ') : []
     const [day = '', month = '', year = ''] = date ? date.split('.') : []
     let D
@@ -43,7 +42,6 @@ class DateTimeInputWidget extends React.Component {
     } else {
       D = '[0-9]'
     }
-//    console.log('D', D)
 
     let M
     if (month.startsWith('1')) {
@@ -70,9 +68,7 @@ class DateTimeInputWidget extends React.Component {
       format = 'HH:mm'
     }
 
-//    console.log('mask', mask)
     const { cssPrefix } = formContext
-//    console.log('input value:', value)
     return (
       <InputElement
         mask={mask}
@@ -94,7 +90,6 @@ class DateTimeInputWidget extends React.Component {
           }
         })}
         onFocus={(a) => {
-//          console.log('focus on input', a)
           formContext.setTouched(id)
         }}
         onClick={openCalendar}
@@ -161,7 +156,6 @@ class DateTimeInputWidget extends React.Component {
         }}
         isValidDate={validateDates(dateTimeAvailableDates)}
         onBlur={onBlur && (value => {
-          console.log('blur!')
           if (/\d/.test(value)) {
             formContext.setDirty(id)
             onChange(formatDateCustom(format)(value))
@@ -170,12 +164,10 @@ class DateTimeInputWidget extends React.Component {
           }
         })}
         onChange={(value) => {
-//          console.log('change datepicker:', value)
           onChange(formatDateCustom(format)(value))
         }}
         renderInput={this.renderInput}
         onFocus={() => {
-          console.log('focused!')
           formContext.setTouched(id)
         }}
       />
