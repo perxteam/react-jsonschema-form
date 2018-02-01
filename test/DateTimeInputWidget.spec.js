@@ -7,7 +7,7 @@ import Form from "../src";
 import moment from 'moment'
 import Adapter from 'enzyme-adapter-react-15';
 import simulant from 'simulant'
-import ReactTestUtils from 'react-dom/test-utils'
+import TestUtils from 'react-dom/test-utils'
 import { formatDateCustom } from '../src/utils'
 
 configure({ adapter: new Adapter() });
@@ -77,32 +77,30 @@ const utils = {
     const target = component.find('DateTimeInputWidget InputElement input').getDOMNode()
 
     target.focus()
-    ReactTestUtils.Simulate.focus(target);
+    TestUtils.Simulate.focus(target);
 
     input.setCursorPos(0);
     target.value = value
     input.setCursorPos(value.length);
 
-    ReactTestUtils.Simulate.change(target)
-    ReactTestUtils.Simulate.change(target)
-    console.log('value:', target.value)
+    TestUtils.Simulate.change(target)
+    TestUtils.Simulate.change(target)
   },
-  continueInput(component, value) {
+  continueManualInput(component, value) {
     const input = component.find('DateTimeInputWidget InputElement').instance()
     const target = component.find('DateTimeInputWidget InputElement input').getDOMNode()
-    const pos = input.getCursorPos();
-    console.log('position', pos)
 
-//    target.focus()
-//    ReactTestUtils.Simulate.focus(target);
-//
-//    input.setCursorPos(0);
-    target.value = value
-    input.setCursorPos(value.length);
+    target.focus()
+    TestUtils.Simulate.focus(target);
 
-    ReactTestUtils.Simulate.change(target)
-    ReactTestUtils.Simulate.change(target)
-    console.log('value:', target.value)
+    input.setCursorPos(0);
+    const currentValue = target.value.match(/\d+/g).map(Number).join('');
+    const newValue = currentValue + value
+    target.value = newValue
+    input.setCursorPos(newValue);
+
+    TestUtils.Simulate.change(target)
+    TestUtils.Simulate.change(target)
   },
 }
 
@@ -172,11 +170,36 @@ describe('Testing component "DateTimeInput"', function () {
   })
 
   it('should prevent from incorrect datetime input', function () {
-    const wrapper = createFormComponent({ schema, uiSchema })
-    utils.focus(wrapper)
-    utils.manualInput(wrapper, '428352120')
-    assert.equal(wrapper.state().formData.foo, '28.12.____ __:__')
-    utils.continueInput(wrapper, '11')
-    console.log('state', wrapper.state().formData.foo)
+    let wrapper = createFormComponent({ schema, uiSchema })
+    utils.manualInput(wrapper, '4953974321')
+    assert.equal(wrapper.state().formData.foo, '31.__.____ __:__')
+    wrapper.unmount()
+
+    wrapper = createFormComponent({ schema, uiSchema })
+    utils.manualInput(wrapper, '9409')
+    assert.equal(wrapper.state().formData.foo, '09.__.____ __:__')
+    wrapper.unmount()
+
+    wrapper = createFormComponent({ schema, uiSchema })
+    utils.manualInput(wrapper, '56629')
+    assert.equal(wrapper.state().formData.foo, '29.__.____ __:__')
+    wrapper.unmount()
+
+    wrapper = createFormComponent({ schema, uiSchema })
+    utils.manualInput(wrapper, '985416')
+    assert.equal(wrapper.state().formData.foo, '16.__.____ __:__')
+    wrapper.unmount()
+
+    wrapper = createFormComponent({ schema, uiSchema })
+    utils.manualInput(wrapper, '29182')
+    assert.equal(wrapper.state().formData.foo, '29.12.____ __:__')
+    utils.continueManualInput(wrapper, '9432132')
+    assert.equal(wrapper.state().formData.foo, '29.12.2132 __:__')
+
+    utils.continueManualInput(wrapper, '932543')
+    assert.equal(wrapper.state().formData.foo, '29.12.2132 23:__')
+
+    utils.continueManualInput(wrapper, '98659')
+    assert.equal(wrapper.state().formData.foo, '29.12.2132 23:59')
   })
 })
