@@ -4,15 +4,7 @@ import InputElement from 'react-input-mask'
 import moment from 'moment'
 import 'moment/locale/ru'
 import 'react-datetime/css/react-datetime.css'
-
-export const formatDateCustom = (format) => (date) => {
-  if (!moment(date, format, true).isValid()) return date
-  return date
-    ? moment(new Date(date)).format(format)
-    : undefined
-}
-
-export const formatDate = formatDateCustom('DD.MM.YYYY HH:mm')
+import { formatDateCustom } from '../../utils'
 
 const validateDates = (availableDates) => (current) => {
   if (availableDates === 'future') {
@@ -86,7 +78,9 @@ class DateTimeInputWidget extends React.Component {
           ? 'ant-input ant-input-lg'
           : `${cssPrefix}__form-control`
         }
-        onChange={event => onChange(event.target.value)}
+        onChange={event => {
+          onChange(event.target.value)
+        }}
         onBlur={onBlur && (({ target: { value } }) => {
           if (/\d/.test(value)) {
             formContext.setDirty(id)
@@ -95,7 +89,9 @@ class DateTimeInputWidget extends React.Component {
             onChange(undefined)
           }
         })}
-        onFocus={() => formContext.setTouched(id)}
+        onFocus={(a) => {
+          formContext.setTouched(id)
+        }}
         onClick={openCalendar}
         value={value || ''}
         formatChars={{
@@ -128,7 +124,7 @@ class DateTimeInputWidget extends React.Component {
       ...inputProps
     } = this.props;
 
-  //  console.log('value', value , 'is date valid:', moment(value, dateTimeFormat, true).isValid(), 'js format', new Date(value))
+    //  console.log('value', value , 'is date valid:', moment(value, dateTimeFormat, true).isValid(), 'js format', new Date(value))
     const { dateTimeWidgetType, dateTimeAvailableDates } = options
     let dateFormat = false, timeFormat = false, format, viewMode = 'days'
     if (!dateTimeWidgetType || dateTimeWidgetType === 'dateTime') {
@@ -144,7 +140,6 @@ class DateTimeInputWidget extends React.Component {
       viewMode = 'time'
     }
     const { cssPrefix } = formContext
-
     return (
       <Datetime
         locale="ru"
@@ -168,9 +163,13 @@ class DateTimeInputWidget extends React.Component {
             onChange(undefined)
           }
         })}
-        onChange={(value) => onChange(formatDateCustom(format)(value))}
+        onChange={(value) => {
+          onChange(formatDateCustom(format)(value))
+        }}
         renderInput={this.renderInput}
-        onFocus={() => formContext.setTouched(id)}
+        onFocus={() => {
+          formContext.setTouched(id)
+        }}
       />
     )
   }

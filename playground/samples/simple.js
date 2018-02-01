@@ -85,6 +85,7 @@ module.exports = {
     datetime: {
       "ui:widget": "dateTime",
       "ui:dateTimeWidgetType": "dateTime",
+      "ui:dateTimeAvailableDates": "past"
     },
     masked: {
       "ui:widget": "maskedInput",

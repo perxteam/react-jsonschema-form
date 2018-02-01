@@ -4,7 +4,7 @@ import { assert } from 'chai'
 import { spy } from 'sinon'
 import { mount, shallow, configure } from 'enzyme'
 import $ from 'jquery'
-import Form from "../src";
+import Form from "components/Form";
 import Adapter from 'enzyme-adapter-react-15';
 
 configure({ adapter: new Adapter() });
