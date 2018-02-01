@@ -6,8 +6,6 @@ import 'moment/locale/ru'
 import 'react-datetime/css/react-datetime.css'
 import { formatDateCustom } from '../../utils'
 
-export const formatDate = formatDateCustom('DD.MM.YYYY HH:mm')
-
 const validateDates = (availableDates) => (current) => {
   if (availableDates === 'future') {
     const yesterday = Datetime.moment().subtract(1, 'day')

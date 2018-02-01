@@ -102,7 +102,50 @@ const utils = {
     TestUtils.Simulate.change(target)
     TestUtils.Simulate.change(target)
   },
+  previousMonth(component) {
+    component.find('DateTimeInputWidget .rdtPrev').simulate('click')
+  },
+  nextMonth(component) {
+    component.find('DateTimeInputWidget .rdtNext').simulate('click')
+  },
 }
+
+const splitDaysOnToday = R.compose(
+  R.splitWhen(R.contains('rdtToday')),
+  R.map((item) => item.prop('className')),
+)
+
+const allIsDisabled = R.all(R.contains('rdtDisabled'))
+
+const checkAllDaysIsDisabled = R.compose(
+  allIsDisabled,
+  R.map((item) => item.prop('className')),
+)
+
+const checkTodayIsDisabled = R.compose(
+  R.ifElse(R.isNil, R.identity, R.contains('rdtDisabled')),
+  R.find(R.contains('rdtToday')),
+  R.map((item) => item.prop('className')),
+)
+
+const checkDaysBeforeTodayDisabled = R.compose(
+  allIsDisabled,
+  R.head,
+  splitDaysOnToday,
+)
+
+const checkDaysFromTodayDisabled = R.compose(
+  allIsDisabled,
+  R.last,
+  splitDaysOnToday,
+)
+
+const checkDaysAfterTodayDisabled = R.compose(
+  allIsDisabled,
+  R.drop(1), // omit .rdtToday, which must be enabled despite of ui:dateTimeAvailableDates
+  R.last,
+  splitDaysOnToday,
+)
 
 describe('Testing component "DateTimeInput"', function () {
   it('should have default placeholder in format: "ДД.ММ.ГГГГ чч:мм"', function () {
@@ -201,5 +244,134 @@ describe('Testing component "DateTimeInput"', function () {
 
     utils.continueManualInput(wrapper, '98659')
     assert.equal(wrapper.state().formData.foo, '29.12.2132 23:59')
+  })
+
+  it('should change behaviour when ui:dateTimeWidgetType is "date"', function () {
+    const uiSchema = {
+      foo: {
+        "ui:widget": "dateTime",
+        "ui:dateTimeWidgetType": "date",
+      },
+    }
+    const wrapper = createFormComponent({ schema, uiSchema })
+    assert.equal(wrapper.find('.rdtTimeToggle').length, 0)
+    assert.equal(wrapper.find('.rdtDays').length, 1)
+    assert.equal(wrapper.find('InputElement').prop('placeholder'), 'ДД.ММ.ГГГГ')
+
+    utils.manualInput(wrapper, '31122999')
+    assert.equal(wrapper.state().formData.foo, '31.12.2999')
+  })
+
+  it('should change behaviour when ui:dateTimeWidgetType is "time"', function () {
+    const uiSchema = {
+      foo: {
+        "ui:widget": "dateTime",
+        "ui:dateTimeWidgetType": "time",
+      },
+    }
+    const wrapper = createFormComponent({ schema, uiSchema })
+    assert.equal(wrapper.find('.rdtTime').length, 1)
+    assert.equal(wrapper.find('.rdtDays').length, 0)
+    assert.equal(wrapper.find('.rdtTimeToggle').length, 0)
+    assert.equal(wrapper.find('InputElement').prop('placeholder'), 'ЧЧ:ММ')
+
+    utils.manualInput(wrapper, '2359')
+    assert.equal(wrapper.state().formData.foo, '23:59')
+  })
+
+  it('should change placeholder acorrding to "ui:options"->placeholder', function () {
+    const placeholder = '223322223'
+    const uiSchema = {
+      foo: {
+        "ui:widget": "dateTime",
+        "ui:options": {
+          placeholder,
+        }
+      },
+    }
+    const wrapper = createFormComponent({ schema, uiSchema })
+    assert.equal(wrapper.find('InputElement').prop('placeholder'), placeholder)
+  })
+
+  it('should disable past dates when "ui:dateTimeAvailableDates" is "future"', function () {
+    const uiSchema = {
+      foo: {
+        "ui:widget": "dateTime",
+        "ui:dateTimeAvailableDates": "future"
+      },
+    }
+    const wrapper = createFormComponent({ schema, uiSchema })
+    let days = wrapper.find('.rdtDay')
+    const isPastDaysDisabled = checkDaysBeforeTodayDisabled(days)
+    assert.equal(isPastDaysDisabled, true)
+    const isFutureDaysDisabled = checkDaysFromTodayDisabled(days)
+    assert.equal(isFutureDaysDisabled, false)
+    let isTodayDisabled = checkTodayIsDisabled(days)
+    assert.equal(isTodayDisabled, false)
+
+    utils.previousMonth(wrapper)
+    days = wrapper.find('.rdtDay')
+    const isPastDaysOfPreviousMonthDisabled = checkDaysBeforeTodayDisabled(days)
+    assert.equal(isPastDaysOfPreviousMonthDisabled, true)
+    const isFutureDaysOfPreviousMonthDisabled = checkDaysFromTodayDisabled(days)
+    assert.equal(isFutureDaysOfPreviousMonthDisabled, false)
+    isTodayDisabled = checkTodayIsDisabled(days)
+    assert.oneOf(isTodayDisabled, [false, undefined])
+
+    utils.previousMonth(wrapper)
+    days = wrapper.find('.rdtDay')
+    const isAllDaysOfMonthDisabled = checkAllDaysIsDisabled(days)
+    assert.equal(isAllDaysOfMonthDisabled, true)
+    isTodayDisabled = checkTodayIsDisabled(days)
+    assert.equal(isTodayDisabled, undefined)
+
+    utils.nextMonth(wrapper)
+    utils.nextMonth(wrapper)
+    utils.nextMonth(wrapper)
+    days = wrapper.find('.rdtDay')
+    const isAllFutureDaysDisabled = checkAllDaysIsDisabled(days)
+    assert.oneOf(isTodayDisabled, [false, undefined])
+  })
+
+  it('should disable future dates when "ui:dateTimeAvailableDates" is "past"', function () {
+    const uiSchema = {
+      foo: {
+        "ui:widget": "dateTime",
+        "ui:dateTimeAvailableDates": "past"
+      },
+    }
+    const wrapper = createFormComponent({ schema, uiSchema })
+    let days = wrapper.find('.rdtDay')
+    const isPastDaysDisabled = checkDaysBeforeTodayDisabled(days)
+    assert.equal(isPastDaysDisabled, false)
+    const isFutureDaysDisabled = checkDaysAfterTodayDisabled(days)
+    assert.equal(isFutureDaysDisabled, true)
+    let isTodayDisabled = checkTodayIsDisabled(days)
+    assert.equal(isTodayDisabled, false)
+
+    utils.previousMonth(wrapper)
+    days = wrapper.find('.rdtDay')
+    const isPastDaysOfPreviousMonthDisabled = checkDaysBeforeTodayDisabled(days)
+    assert.equal(isPastDaysOfPreviousMonthDisabled, false)
+    const isFutureDaysOfPreviousMonthDisabled = checkDaysAfterTodayDisabled(days)
+    assert.equal(isFutureDaysOfPreviousMonthDisabled, true)
+    isTodayDisabled = checkTodayIsDisabled(days)
+    assert.oneOf(isTodayDisabled, [false, undefined])
+
+    utils.previousMonth(wrapper)
+    days = wrapper.find('.rdtDay')
+    const isAllDaysOfMonthDisabled = checkAllDaysIsDisabled(days)
+    assert.equal(isAllDaysOfMonthDisabled, false)
+    isTodayDisabled = checkTodayIsDisabled(days)
+    assert.equal(isTodayDisabled, undefined)
+
+    utils.nextMonth(wrapper)
+    utils.nextMonth(wrapper)
+    utils.nextMonth(wrapper)
+    days = wrapper.find('.rdtDay')
+    const isAllFutureDaysDisabled = checkAllDaysIsDisabled(wrapper.find('.rdtDay'))
+    assert.equal(isAllFutureDaysDisabled, true)
+    isTodayDisabled = checkTodayIsDisabled(days)
+    assert.oneOf(isTodayDisabled, [false, undefined])
   })
 })
