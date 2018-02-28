@@ -33,6 +33,22 @@ class PhoneInputWidget extends React.Component {
     const { prefixCheck } = this.state
     const match = value && value.match(prefixCheck)
     const prefix = match && match[1]
+
+//    if (match) {
+//      const parsedValue = match[1]
+//      if (parsedValue.length) {
+//        formContext.setDirty(id)
+//      }
+//    } else {
+//      formContext.setTouched(id)
+//    }
+
+    if (prefix && prefix.length) {
+      formContext.setDirty(id)
+    } else {
+      formContext.setTouched(id)
+    }
+
     const parsedValue = match && match[2]
     if (value === prefix) {
       onChange(undefined)
@@ -57,6 +73,8 @@ class PhoneInputWidget extends React.Component {
       formContext,
     } = this.props
     const { cssPrefix } = formContext
+//    console.log('props', this.props)
+    console.log('formContext', formContext)
     return (
       <ReactTelInput
         value={value}
