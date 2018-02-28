@@ -4,7 +4,7 @@
   "description": "A simple React component capable of building HTML forms out of a JSON schema.",
   "scripts": {
     "build:readme": "toctoc README.md -w",
-    "build:lib": "rimraf lib && cross-env NODE_ENV=production babel -d lib/ src/ && git add .",
+    "build:lib": "rimraf lib && cross-env NODE_ENV=production babel -d lib/ src/ && make-dir lib/assets/css/ && cp -v node_modules/react-uploader/lib/css/main.css lib/assets/css/ && git add .",
     "build:dist": "rimraf dist && cross-env NODE_ENV=production webpack --config webpack.config.dist.js --optimize-minimize",
     "build:playground": "rimraf build && cross-env NODE_ENV=production webpack --config webpack.config.prod.js --optimize-minimize && cp playground/index.prod.html build/index.html",
     "dist": "npm run build:lib && npm run build:dist",
@@ -78,6 +78,7 @@
     "html": "0.0.10",
     "ignore-styles": "^5.0.1",
     "jsdom": "^8.3.0",
+    "make-dir-cli": "1.0.0",
     "mocha": "^2.5.3",
     "node-sass": "^4.7.2",
     "pre-commit": "^1.2.2",
