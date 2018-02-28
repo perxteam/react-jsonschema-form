@@ -3,6 +3,7 @@ import R from 'ramda'
 import ReactTelInput from 'react-telephone-input'
 import 'react-telephone-input/lib/withStyles'
 
+
 class PhoneInputWidget extends React.Component {
   constructor(props) {
     super(props)
@@ -14,7 +15,6 @@ class PhoneInputWidget extends React.Component {
     const prefix = Array.from(dialCode)
       .reduce((result, current) => result.replace('.', current), format)
       .match(/(^\+\d+ ?).*/)[1]
-    console.log(prefix)
     this.state = { prefixCheck: new RegExp(`(^\\${prefix})(.*)`) }
   }
 
@@ -33,15 +33,6 @@ class PhoneInputWidget extends React.Component {
     const { prefixCheck } = this.state
     const match = value && value.match(prefixCheck)
     const prefix = match && match[1]
-
-//    if (match) {
-//      const parsedValue = match[1]
-//      if (parsedValue.length) {
-//        formContext.setDirty(id)
-//      }
-//    } else {
-//      formContext.setTouched(id)
-//    }
 
     if (prefix && prefix.length) {
       formContext.setDirty(id)
@@ -73,8 +64,6 @@ class PhoneInputWidget extends React.Component {
       formContext,
     } = this.props
     const { cssPrefix } = formContext
-//    console.log('props', this.props)
-    console.log('formContext', formContext)
     return (
       <ReactTelInput
         value={value}
