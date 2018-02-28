@@ -1,6 +1,6 @@
 import React, {PropTypes} from "react";
-import ReactTelInput from '@oledm/react-telephone-input'
-import '@oledm/react-telephone-input/lib/withStyles'
+import ReactTelInput from 'react-telephone-input'
+import 'react-telephone-input/lib/withStyles'
 
 class PhoneInputWidget extends React.Component {
   shouldComponentUpdate(nextProps) {
