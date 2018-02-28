@@ -35,7 +35,6 @@
     "react": "^15.0.0"
   },
   "dependencies": {
-    "@oledm/react-telephone-input": "^4.0.11",
     "country-telephone-data": "^0.4.2",
     "isomorphic-fetch": "^2.2.1",
     "jquery": "^3.2.1",
@@ -46,6 +45,7 @@
     "react-datetime": "2.11.1",
     "react-input-mask": "^1.1.2",
     "react-select2-wrapper": "1.0.4-beta6",
+    "react-telephone-input": "https://github.com/perxteam/react-telephone-input.git#16812da",
     "react-uploader": "https://github.com/perxteam/react-uploader.git#19820c8",
     "select2": "4.0.3",
     "setimmediate": "^1.0.5"
