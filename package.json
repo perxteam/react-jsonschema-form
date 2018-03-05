@@ -46,7 +46,7 @@
     "react-input-mask": "^1.1.2",
     "react-select2-wrapper": "1.0.4-beta6",
     "react-telephone-input": "https://github.com/perxteam/react-telephone-input.git#9206600",
-    "react-uploader": "https://github.com/perxteam/react-uploader.git#19820c8",
+    "react-uploader": "https://github.com/perxteam/react-uploader.git#5cc12c6",
     "select2": "4.0.3",
     "setimmediate": "^1.0.5"
   },
