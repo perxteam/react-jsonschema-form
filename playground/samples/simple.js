@@ -150,9 +150,10 @@ module.exports = {
     },
     images: {
       "ui:widget": "filesAsync",
-      "ui:fileSizeMin": 100,
       "ui:fileSizeMax": 10000,
       "ui:totalFilesCount": 5,
+      "ui:totalFilesCount": 5,
+      "ui:fileExtensions": 'jpg,png,                      bmp,gif,     tif',
       "ui:apiUrl": 'http://127.0.0.1:8080/forms/api/v1/uploads',
     },
     appeal: {
