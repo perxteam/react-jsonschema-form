@@ -20,7 +20,7 @@ const validateDates = (availableDates) => (current) => {
 class DateTimeInputWidget extends React.Component {
   constructor(props) {
     super(props)
-    const { formContext: { i18nInstance, i18nPath } } = props
+    const { formContext: { i18nInstance } } = props
     let locale = 'ru'
     if (i18nInstance) {
       locale = i18nInstance.language
