@@ -18,6 +18,16 @@ const validateDates = (availableDates) => (current) => {
 }
 
 class DateTimeInputWidget extends React.Component {
+  constructor(props) {
+    super(props)
+    const { formContext: { i18nInstance } } = props
+    let locale = 'ru'
+    if (i18nInstance) {
+      locale = i18nInstance.language
+    }
+    this.state = { locale }
+  }
+
   renderInput = (props, openCalendar) => {
     const {
       id,
@@ -140,9 +150,10 @@ class DateTimeInputWidget extends React.Component {
       viewMode = 'time'
     }
     const { cssPrefix } = formContext
+    const { locale } = this.state
     return (
       <Datetime
-        locale="ru"
+        locale={locale}
         name={id}
         className={`${cssPrefix}__date-time-picker`}
         dateFormat={dateFormat}
