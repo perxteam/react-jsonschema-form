@@ -69,6 +69,7 @@ class PhoneInputWidget extends React.Component {
         value={value}
         name={id}
         className={`${cssPrefix}__phone-input`}
+        pattern={options.pattern}
         defaultCountry={options.country}
         flagsImagePath={`${options.apiRoot}/assets/images/flags.png`}
         onlyCountries={options.onlyCountries}
