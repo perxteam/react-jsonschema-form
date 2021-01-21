@@ -23,6 +23,11 @@ module.exports = {
         type: "string",
         title: "Masked input",
       },
+      regexp: {
+        type: "string",
+        title: "Regexp input",
+        pattern: "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$",
+      },
       bio: {
         type: "string",
         title: "Bio",
