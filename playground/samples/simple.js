@@ -43,6 +43,7 @@ module.exports = {
       phone: {
         type: "string",
         title: "Phone number",
+        mask: "+. ... ...-..-...",
       },
       appeal: {
         "type": "string",
@@ -105,7 +106,7 @@ module.exports = {
     },
     phone: {
       "ui:widget": "phoneInput",
-      "ui:country": "by",
+      "ui:country": "ru",
       "ui:apiRoot": "http://jlr-forms.dev.perx.ru",
       "ui:options": {
         placeholder: "223322223"
