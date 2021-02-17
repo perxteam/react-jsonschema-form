@@ -45,10 +45,41 @@ module.exports = {
         title: 'Go on and <a href="http://ya.ru">Check me</a>',
         type: "boolean",
       },
+      phoneCountry: {
+        "type": "string",
+        "title": "Phone countries",
+        "enum": [
+          "Russia",
+          "Belarus",
+          "Kazakhstan",
+          "Armenia",
+        ],
+        "enumNames": [
+          "Россия",
+          "Беларусь",
+          "Казахстан",
+          "Армения",
+        ],
+        "default": "Russia",
+      },
       phone: {
         type: "string",
         title: "Phone number",
-        mask: "+. ... ...-..-...",
+        masterFieldId: "phoneCountry",
+        countries: [{
+          name: "Russia",
+          code: "ru"
+        }, {
+          name: "Belarus",
+          code: "by"
+        }, {
+          name: "Kazakhstan",
+          code: "kz"
+        }, {
+          name: "Armenia",
+          code: "am",
+        }],
+        // mask: "+. ... ...-..-...",
       },
       appeal: {
         "type": "string",
@@ -108,6 +139,12 @@ module.exports = {
     },
     date: {
       "ui:widget": "alt-datetime"
+    },
+    phoneContry: {
+      "ui:widget": "select",
+      "ui:options": {
+        placeholder: "phoneContry"
+      }
     },
     phone: {
       "ui:widget": "phoneInput",

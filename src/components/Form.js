@@ -192,6 +192,7 @@ export default class Form extends Component {
       ? {
         ...initialContext,
         ...this.props.formContext,
+        formData: this.state.formData,
       } : initialContext,
       resetForm: this.resetForm,
     };

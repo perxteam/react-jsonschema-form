@@ -1,50 +1,79 @@
-import React, {PropTypes} from "react";
-import R from 'ramda'
-import ReactTelInput from 'react-telephone-input'
-import 'react-telephone-input/lib/withStyles'
-
+import React from "react";
+import R from "ramda";
+import ReactTelInput from "react-telephone-input";
+import "react-telephone-input/lib/withStyles";
 
 class PhoneInputWidget extends React.Component {
   constructor(props) {
-    super(props)
-    const { options: { country, onlyCountries } } = props
-    const { dialCode, format } = R.compose(
-      R.pick(['dialCode', 'format']),
-      R.find(R.propEq('iso2', country))
-    )(onlyCountries)
+    super(props);
+    const {options: {country}} = props;
+
+    this.state = {
+      prefixCheck: this.getPrefixCheck(country),
+      countryCode: country,
+    };
+  }
+
+  getPrefixCheck = (code) => {
+    const {options: {onlyCountries}} = this.props;
+
+    const {dialCode, format} = R.compose(
+      R.pick(["dialCode", "format"]),
+      R.find(R.propEq("iso2", code))
+    )(onlyCountries);
+
     const prefix = Array.from(dialCode)
-      .reduce((result, current) => result.replace('.', current), format)
-      .match(/(^\+\d+ ?).*/)[1]
-    this.state = { prefixCheck: new RegExp(`(^\\${prefix})(.*)`) }
+      .reduce((result, current) => result.replace(".", current), format)
+      .match(/(^\+\d+ ?).*/)[1];
+
+    return new RegExp(`(^\\${prefix})(.*)`);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const {onChange} = this.props;
+    const {formContext, schema: {masterFieldId, countries = []}} = nextProps;
+
+    const nextCountryName = formContext.formData[masterFieldId];
+    const nextCountry = countries.find(curr => curr.name === nextCountryName);
+
+    if (nextCountry && nextCountry.code !== this.state.countryCode) {
+      this.setState({
+        prefixCheck: this.getPrefixCheck(nextCountry.code),
+        countryCode: nextCountry.code,
+      });
+
+      onChange(undefined);
+    }
   }
 
   shouldComponentUpdate(nextProps) {
     // This is required only when widget is in constructor-mode (opposite preview-mode).
     if (nextProps.options.country !== this.props.options.country) {
       setTimeout(() => {
-        this.forceUpdate()
-      }, 0)
+        this.forceUpdate();
+      }, 0);
     }
-    return true
+    return true;
   }
 
   onChange = (value) => {
-    const { onChange, schema, id, formContext } = this.props
-    const { prefixCheck } = this.state
-    const match = value && value.match(prefixCheck)
-    const prefix = match && match[1]
+    const {onChange, id, formContext} = this.props;
+    const {prefixCheck} = this.state;
+    const match = value && value.match(prefixCheck);
+    const prefix = match && match[1];
 
     if (prefix && prefix.length) {
-      formContext.setDirty(id)
+      formContext.setDirty(id);
     } else {
-      formContext.setTouched(id)
+      formContext.setTouched(id);
     }
 
-    const parsedValue = match && match[2]
+    const parsedValue = match && match[2];
+
     if (value === prefix) {
-      onChange(undefined)
+      onChange(undefined);
     } else if (parsedValue) {
-      onChange(value)
+      onChange(value);
     }
   }
 
@@ -54,31 +83,27 @@ class PhoneInputWidget extends React.Component {
       id,
       options,
       value,
-      required,
-      disabled,
-      readonly,
-      multiple,
-      autofocus,
       onBlur,
       placeholder,
       formContext,
-    } = this.props
-    const { cssPrefix } = formContext
+    } = this.props;
+    const {countryCode} = this.state;
+    const {cssPrefix} = formContext;
     return (
       <ReactTelInput
         value={value}
         name={id}
         className={`${cssPrefix}__phone-input`}
         pattern={schema.mask}
-        defaultCountry={options.country}
+        // defaultCountry={options.country}
+        defaultCountry={countryCode}
         flagsImagePath={`${options.apiRoot}/assets/images/flags.png`}
         onlyCountries={options.onlyCountries}
         onBlur={onBlur && (value => onBlur(id, event))}
         onFocus={() => formContext.setTouched(id)}
         placeholder={placeholder}
-        onChange={this.onChange}
-      />
-    )
+        onChange={this.onChange}/>
+    );
   }
 }
 
