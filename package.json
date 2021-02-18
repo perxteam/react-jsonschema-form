@@ -45,7 +45,7 @@
     "react-datetime": "2.11.1",
     "react-input-mask": "^1.1.2",
     "react-select2-wrapper": "1.0.4-beta6",
-    "react-telephone-input": "https://github.com/perxteam/react-telephone-input.git#35d15ba",
+    "react-telephone-input": "https://github.com/perxteam/react-telephone-input.git#d9d26ca",
     "react-uploader": "https://github.com/perxteam/react-uploader.git#b52dba6",
     "select2": "4.0.3",
     "setimmediate": "^1.0.5"
